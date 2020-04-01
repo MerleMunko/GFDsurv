@@ -1,8 +1,3 @@
-#lev_names
-#blev
-###testgit sd
-#weniger
-
 
 rm(list = ls())
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
