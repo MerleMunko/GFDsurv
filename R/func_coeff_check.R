@@ -1,4 +1,16 @@
-coeff.check <- function (cross = cross, rg = rg)  
+## The coeff.check functions checks wheter the specified directions are linearly independent.
+## For this purpose the vectors consiting of the polynomial coefficients
+## (rewrite w(x) = sum_{k=1}^maxpower c_k x^k ) are checked to be
+## linearly independet. When the directions are linearly dependent then a subgroup of directions
+## will be determined such that the consisting directions are linearly independent and there is
+## no subgroup of larger size with this property.
+
+## Output
+#  rg:     a list containing the exponents r,g.
+#  cross:  logical. Is the directions corresponding to crossing hazards included?
+#  indep: logical. Were the original directions linearly dependent?
+
+coeff.check <- function (cross = cross, rg = rg)
 {
   if (is.null(rg)) {
     return(list(rg = rg, cross = cross, indep = TRUE))
@@ -13,7 +25,7 @@ coeff.check <- function (cross = cross, rg = rg)
     r <- x[1]
     g <- x[2]
     k <- 0:g
-    c(numeric(r), choose(g, k) * (-1)^k, numeric(max(maxpower - 
+    c(numeric(r), choose(g, k) * (-1)^k, numeric(max(maxpower -
                                                        r - g, 0)))
   }
   match.fun(coeff)
