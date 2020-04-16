@@ -257,7 +257,7 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
   output$rg <- rg
 
 
- class(output) <- "Factorial"
+ class(output) <- "GFDsurv"
   return(output)
 }
 

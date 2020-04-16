@@ -1,17 +1,16 @@
-
 #' @export
-print.Factorial <- function(x, ...) {
+print.GFDsurv <- function(x, ...) {
   cat("Call:", "\n")
   print(x$input$formula)
-  
+
   cat("\n", "P-Value Standard Test", "\n", sep = "")
   print(x$pvalue_stat)
   cat("\n", "P-Value Permutation Test", "\n", sep = "")
-  print(x$pvalue_per) 
+  print(x$pvalue_per)
 }
 
 #' @export
-summary.Factorial <- function (x, ...) {
+summary.GFDsurv <- function (x, ...) {
   if ( length(x$rg) == 0 ){
     cat("The chosen weights are linearly independent.", "\n",
         "The test is based on the crossing weight.", "\n","\n")
