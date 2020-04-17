@@ -1,11 +1,62 @@
+#' Two-sample multiple-direction log rank test
+#'
+#' The mdir.logrank function calculates the p-values of the multiple-direction logrank test based
+#' on the \eqn{\chi^2}-approximation and the permutation approach.
+#' @param formula A model \code{formula} object. The left hand side contains the time variable and the right
+#'  hand side contains the factor variables of interest. An interaction term must be specified.
+#' @param event Name of the response variable
+#' @param data A data.frame, list or environment containing the variables \code{time},
+#'   \code{event} (with values 0 for censored and 1 for uncensored) and \time{group}.
+#' @param cross logical. Should the weight correspondng to crossing hazards be included?
+#'  The default is \code{TRUE}.
+#' @param rg A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the directions
+#'   \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
+#'  Default is \code{list( c(0, 0) )} corresponding to proportional hazards.
+#' @param nperm The number of permutations used for calculating the permuted p-value.
+#'   The default option is 10000.
+#' @param alpha A number specifying the significance level; the default is 0.05.
+#' @param nested.levels.unique A logical specifying whether the levels of the nested factor(s) are labeled uniquely or not.
+#'  Default is FALSE, i.e., the levels of the nested factor are the same for each level of the main factor.
+#' @details The package provides the multiple-direction logrank statistic for
+#'   the two sample testing problem withing right-censored survival data. Directions
+#'   of the form w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
+#'   r,g (including 0) can be specified.
+#'   The multiple-direction logrank test needs linearly independent directions.
+#'   A check for this is implement. If the directions chosen by the user are
+#'   linearly independent then a subset consisting of linearly independent directions
+#'   is selected automatically.
+#'
+#'   The \code{mdir.logrank} function returns the test statistic as well as two
+#'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
+#'   the second one is based on a permutation procedure.
+#'
+#' @return A \code{mdir.logrank} object containing the following components:
+#' \item{Descriptive}{The directions used and whether the directions specified by the user were
+#'    were linearly independent}
+#'  \item{p.values}{The p-values of the multiple-direction logrank test using the
+#'    \eqn{\chi^2}-approximation (Approx.) as well as the one using the permutation approach (Perm.)}
+#'  \item{stat}{Value of the multiple-direction logrank statistic}
+#'  \item{rg}{A list containg the exponents of the direction considered in the statistical analysis
+#'  \item{cross}{logical. Was the crossing direction considered in the statistical analysis}
+#'  \item{indep}{logical. Were the directions specified by the user linearly independent?}
+#'  \item{nperm}{The number of permutations used for calculating the permuted p-value.
+#' @examples
+#' library(coin)
+#' data(GTSG)
+#' out <- mdir.logrank(data = GTSG)
+#'
+#' ## Detailed informations:
+#' summary(out)
+#'
+#' @references Ditzhaus, M., Friedrich, S. (2018). Titel und so (Theory)
+#'
+#' Ditzhaus, M., Friedrich, S. (2018). Titel und so (practical paper)
+#'
+#' @importFrom stats runif
+#'
+#'
 
-rm(list = ls())
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-source("func_coeff_check.R")
-source("utilty_functions.R")
-source("teststatistic_pkg_20_03_25.R")
-load("testData.RData")
-
+#' @export
 func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha = 0.05,
                       cross = TRUE, nested.levels.unique = FALSE, rg = list(c(0,0))){
   input_list <- list(formula = formula,time = time, data = data, nperm = nperm,
@@ -260,10 +311,10 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
  class(output) <- "GFDsurv"
   return(output)
 }
-
-library("survival")
-
-###
-test_2 <- func_test(formula ="time ~ trt*celltype",event = "status", data = veteran, nperm = 1000, alpha = 0.05)
-summary(test_2)
+#
+# library("survival")
+#func
+# ###
+# test_2 <- func_test(formula ="time ~ trt*celltype",event = "status", data = veteran, nperm = 1000, alpha = 0.05)
+# summary(test_2)
 

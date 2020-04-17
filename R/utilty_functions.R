@@ -25,6 +25,5 @@ summary.GFDsurv <- function (x, ...) {
         if ( x$cross == TRUE){ "the crossing weight and "},
         length(x$rg), " ","weight", if (length(x$rg) > 1){"s"}, " with exponents ", "\n",
         "     ", "c(r,g)=  ", rg_rep, ".", "\n","\n", sep="")
-  }
   print(x)
 }
