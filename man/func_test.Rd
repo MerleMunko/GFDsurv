@@ -40,7 +40,7 @@ Default is FALSE, i.e., the levels of the nested factor are the same for each le
 Default is \code{list( c(0, 0) )} corresponding to proportional hazards.}
 }
 \description{
-The function names calculates the p-values of the multiple-direction logrank test based
+The function NAME  calculates the p-values of the multiple-direction logrank test based
 on the \eqn{\chi^2}-approximation and the permutation approach.
 }
 \details{

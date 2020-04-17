@@ -17,7 +17,7 @@
 #' @param alpha A number specifying the significance level; the default is 0.05.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each level of the main factor.
-#' @details TEXT anpassen (Marc deine Aufgabe???)
+#' @details  TEXT anpassen (Marc deine Aufgabe???)
 #' The package provides the multiple-direction logrank statistic for
 #'   the two sample testing problem withing right-censored survival data. Directions
 #'   of the form w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
@@ -28,7 +28,7 @@
 #'   is selected automatically.
 #'
 #'   The \code{NAME} function returns the test statistic as well as two
-#'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
+#'   corresponding p-values: the first is based on a \eqn{\chi^2} approximation and
 #'   the second one is based on a permutation procedure.
 #'
 #'  @return A \code{NAME} object containing the following components:
