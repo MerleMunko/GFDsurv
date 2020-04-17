@@ -4,9 +4,9 @@ print.GFDsurv <- function(x, ...) {
   print(x$input$formula)
 
   cat("\n", "P-Value Standard Test", "\n", sep = "")
-  print(x$pvalue_stat)
+  print(x$pvalues_stat)
   cat("\n", "P-Value Permutation Test", "\n", sep = "")
-  print(x$pvalue_per)
+  print(x$pvalues_per)
 }
 
 #' @export

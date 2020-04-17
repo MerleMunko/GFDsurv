@@ -1,12 +1,12 @@
-#' Two-sample multiple-direction log rank test
+#' Inference test for factorial designs in survival models
 #'
-#' The mdir.logrank function calculates the p-values of the multiple-direction logrank test based
+#' The function names calculates the p-values of the multiple-direction logrank test based
 #' on the \eqn{\chi^2}-approximation and the permutation approach.
 #' @param formula A model \code{formula} object. The left hand side contains the time variable and the right
 #'  hand side contains the factor variables of interest. An interaction term must be specified.
 #' @param event Name of the response variable
-#' @param data A data.frame, list or environment containing the variables \code{time},
-#'   \code{event} (with values 0 for censored and 1 for uncensored) and \time{group}.
+#' @param data A data.frame, list or environment containing the variables in formula. The
+#' default option is \code{NULL}.
 #' @param cross logical. Should the weight correspondng to crossing hazards be included?
 #'  The default is \code{TRUE}.
 #' @param rg A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the directions
@@ -17,7 +17,9 @@
 #' @param alpha A number specifying the significance level; the default is 0.05.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each level of the main factor.
-#' @details The package provides the multiple-direction logrank statistic for
+#' @details
+#' TEXT anpassen (Marc deine Aufgabe??)
+#' The package provides the multiple-direction logrank statistic for
 #'   the two sample testing problem withing right-censored survival data. Directions
 #'   of the form w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
 #'   r,g (including 0) can be specified.
@@ -26,22 +28,32 @@
 #'   linearly independent then a subset consisting of linearly independent directions
 #'   is selected automatically.
 #'
-#'   The \code{mdir.logrank} function returns the test statistic as well as two
+#'   The \code{NAME} function returns the test statistic as well as two
 #'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
 #'   the second one is based on a permutation procedure.
 #'
-#' @return A
+#'  @return A \code{NAME} object containing the following components:
+#'  \item{pvalues_stat}{The p-values of the multiple-direction logrank test using the
+#'    \eqn{\chi^2}-approximation (Approx.)}
+#'  \item{pvalues_per}{The p-values of the  permutationapproach}
+#'  \item{stat}{NOCHMAL filtern NOCH NICHT DRIN}
+#'  \item{rg}{A list containg the exponents of the direction considered in the statistical analysis
+#'  \item{cross}{logical. Was the crossing direction considered in the statistical analysis}
+#'  \item{indep}{logical. Were the directions specified by the user linearly independent?}
+#'  \item{nperm}{The number of permutations used for calculating the permuted p-value.
 #' @examples
-#' library(coin)
-#' data(GTSG)
-#' out <- mdir.logrank(data = GTSG)
+#' @examples
+#' library("survival")
+#' data(veteran)
+#' out <- func_test(formula ="time ~ trt*celltype",event = "status",
+#'  data = veteran, nperm = 1000, alpha = 0.05)
 #'
 #' ## Detailed informations:
 #' summary(out)
 #'
-#' @references Ditzhaus, M., Friedrich, S. (2018). Titel und so (Theory)
+#' @references Ditzhaus, M., Titel und so (Theory)
 #'
-#' Ditzhaus, M., Friedrich, S. (2018). Titel und so (practical paper)
+#' Ditzhaus Titel und so (practical paper)
 #'
 #' @importFrom stats runif
 #'
@@ -292,12 +304,12 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
   }
   output <- list()
   output$input <- input_list
-  output$pvalue_stat  <- pvalue_stat
-  output$pvalue_per <-pvalue_per
+  output$pvalues_stat  <- pvalue_stat
+  output$pvalues_per <-pvalue_per
   output$cross <- cross
   output$indep <- indep
   output$rg <- rg
-
+  output$nperm <-nperm
 
  class(output) <- "GFDsurv"
   return(output)
