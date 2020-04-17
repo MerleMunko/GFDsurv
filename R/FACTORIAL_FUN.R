@@ -17,8 +17,7 @@
 #' @param alpha A number specifying the significance level; the default is 0.05.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each level of the main factor.
-#' @details
-#' TEXT anpassen (Marc deine Aufgabe??)
+#' @details TEXT anpassen (Marc deine Aufgabe???)
 #' The package provides the multiple-direction logrank statistic for
 #'   the two sample testing problem withing right-censored survival data. Directions
 #'   of the form w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
@@ -41,7 +40,6 @@
 #'  \item{cross}{logical. Was the crossing direction considered in the statistical analysis}
 #'  \item{indep}{logical. Were the directions specified by the user linearly independent?}
 #'  \item{nperm}{The number of permutations used for calculating the permuted p-value.
-#' @examples
 #' @examples
 #' library("survival")
 #' data(veteran)
