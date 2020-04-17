@@ -32,6 +32,9 @@ The default option is 10000.}
 \item{cross}{logical. Should the weight correspondng to crossing hazards be included?
 The default is \code{TRUE}.}
 
+\item{nested.levels.unique}{A logical specifying whether the levels of the nested factor(s) are labeled uniquely or not.
+Default is FALSE, i.e., the levels of the nested factor are the same for each level of the main factor.}
+
 \item{rg}{A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the directions
  \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
 Default is \code{list( c(0, 0) )} corresponding to proportional hazards.}
@@ -39,6 +42,9 @@ Default is \code{list( c(0, 0) )} corresponding to proportional hazards.}
 \description{
 The function names calculates the p-values of the multiple-direction logrank test based
 on the \eqn{\chi^2}-approximation and the permutation approach.
+}
+\details{
+
 }
 \examples{
 library("survival")
