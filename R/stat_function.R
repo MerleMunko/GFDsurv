@@ -186,5 +186,3 @@ hypo_matrices <- lapply(hypo_matrices, C_mat)
 results <- list("Stat" = stat_Erg,"Perm"=per)
 
 }
-
-

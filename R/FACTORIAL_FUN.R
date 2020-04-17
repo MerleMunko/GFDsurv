@@ -302,10 +302,3 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
  class(output) <- "GFDsurv"
   return(output)
 }
-#
-# library("survival")
-#func
-# ###
-# test_2 <- func_test(formula ="time ~ trt*celltype",event = "status", data = veteran, nperm = 1000, alpha = 0.05)
-# summary(test_2)
-
