@@ -30,16 +30,7 @@
 #'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
 #'   the second one is based on a permutation procedure.
 #'
-#' @return A \code{mdir.logrank} object containing the following components:
-#' \item{Descriptive}{The directions used and whether the directions specified by the user were
-#'    were linearly independent}
-#'  \item{p.values}{The p-values of the multiple-direction logrank test using the
-#'    \eqn{\chi^2}-approximation (Approx.) as well as the one using the permutation approach (Perm.)}
-#'  \item{stat}{Value of the multiple-direction logrank statistic}
-#'  \item{rg}{A list containg the exponents of the direction considered in the statistical analysis
-#'  \item{cross}{logical. Was the crossing direction considered in the statistical analysis}
-#'  \item{indep}{logical. Were the directions specified by the user linearly independent?}
-#'  \item{nperm}{The number of permutations used for calculating the permuted p-value.
+#' @return A
 #' @examples
 #' library(coin)
 #' data(GTSG)
