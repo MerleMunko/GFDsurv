@@ -55,7 +55,6 @@ stat <- function(C,group_mat, n, m, event, ngroup, Comb_sig,len_sig, weight_KME,
   # F?ge T_z zu T(m)_Z zusammen
   T_Z_m <- matrix(c(T_Z),m*ngroup)
 
-  #####zu KOMPLiZIeRT BEI REP ########################
   # Erhalte T_Sigma_t
   out_sig <- split(t(out[(m+1):(m+len_sig),]),rep(1:ncol(t(out[(m+1):(m+len_sig),])), each = nrow(t(out[(m+1):(m+len_sig),]))))
   T_Sigma_T <- lapply(out_sig, function(x) C%*% diag(x)%*% t(C))
@@ -83,11 +82,6 @@ stat_1 <- function(C,group_mat, n, m, event, ngroup, Comb_sig,len_sig, weight_KM
 
   #Gewichtsfkten W_n
   n.risk_prod <- list(apply( n.risk_vec, 1, function(x){prod(x)/max(1,sum(x)^{ngroup - 1})}))
-
-  #Alternativen
-  #    n.risk_prod2 <- apply( n.risk_vec, 1, function(x){prod(x)/max(sum(x),1)})
-  #    n.risk_prod3 <- apply( n.risk_vec, 1, function(x){(max(x)*min(x))/max(1,sum(x))})
-
 
   # In Zeile 1-m: Z_wn ;  in Zeile (m+1)-2m:Sigma_Wn
   out <- sapply(1:ngroup, int_fun, event = event, n.risk_vec = n.risk_vec, m=m, weight_Comb=weight_Comb,len_sig = len_sig,
