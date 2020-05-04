@@ -3,6 +3,5 @@
 S3method(print,casanova)
 S3method(summary,casanova)
 export(casanova)
-importFrom(GFD,HN)
 importFrom(magic,adiag)
 importFrom(stats,runif)

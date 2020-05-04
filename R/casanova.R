@@ -66,7 +66,6 @@
 #'           CASANOVA. arXiv preprint (arXiv:2004.10818).
 #'
 #' @importFrom stats runif
-#' @importFrom GFD HN
 #' @importFrom magic adiag
 #'
 #' @export
