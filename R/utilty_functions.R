@@ -1,16 +1,14 @@
 #' @export
-print.GFDsurv <- function(x, ...) {
+print.casanova<- function(x, ...) {
   cat("Call:", "\n")
   print(x$input$formula)
 
-  cat("\n", "P-Value Standard Test", "\n", sep = "")
-  print(x$pvalues_stat)
-  cat("\n", "P-Value Permutation Test", "\n", sep = "")
-  print(x$pvalues_per)
+  cat("\n", "CASANOVA: Cumulative Aalen survival analyis-of-variance:","\n","\n", sep = "")
+  print(x$statistic)
 }
 
 #' @export
-summary.GFDsurv <- function (x, ...) {
+summary.casanova <- function (x, ...) {
   if ( length(x$rg) == 0 ){
     cat("The chosen weights are linearly independent.", "\n",
         "The test is based on the crossing weight.", "\n","\n")
