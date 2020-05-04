@@ -1,44 +1,55 @@
-#' Inference test for factorial designs in survival models
+#' CASANOVA: Cumulative Aalen survival analyis-of-variance
 #'
-#' The function names calculates the p-values of the multiple-direction logrank test based
+#' The function \code{casanova} calculates the p-values of the multiple-direction logrank test based
 #' on the \eqn{\chi^2}-approximation and the permutation approach.
 #' @param formula A model \code{formula} object. The left hand side contains the time variable and the right
-#'  hand side contains the factor variables of interest. An interaction term must be specified.
-#' @param event Name of the response variable
-#' @param data A data.frame, list or environment containing the variables in formula. The
-#' default option is \code{NULL}.
-#' @param cross logical. Should the weight correspondng to crossing hazards be included?
+#'  hand side contains the factor variables of interest. An interaction term must be
+#'  specified.
+#' @param event The name of censoring status indicator with values 0=censored and
+#' 1=uncensored.
+#' The default choice is "event" (KANNST DU DEN DEFAULT BITTE SO EINRICHTEN?)
+#' @param data A data.frame, list or environment containing the variables in formula
+#' and the censoring status
+#' indicator. Default option is \code{NULL}.
+#' @param cross logical. Should the crossing weight w(x) = 1 - 2x be included?
 #'  The default is \code{TRUE}.
-#' @param rg A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the directions
+#' @param rg A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the
+#' weights
 #'   \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
-#'  Default is \code{list( c(0, 0) )} corresponding to proportional hazards.
+#'  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.
 #' @param nperm The number of permutations used for calculating the permuted p-value.
 #'   The default option is 10000.
 #' @param alpha A number specifying the significance level; the default is 0.05.
-#' @param nested.levels.unique A logical specifying whether the levels of the nested factor(s) are labeled uniquely or not.
-#'  Default is FALSE, i.e., the levels of the nested factor are the same for each level of the main factor.
-#' @details  TEXT anpassen (Marc deine Aufgabe???)
-#' The package provides the multiple-direction logrank statistic for
-#'   the two sample testing problem withing right-censored survival data. Directions
-#'   of the form w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
-#'   r,g (including 0) can be specified.
-#'   The multiple-direction logrank test needs linearly independent directions.
-#'   A check for this is implement. If the directions chosen by the user are
-#'   linearly independent then a subset consisting of linearly independent directions
-#'   is selected automatically.
+#' @param nested.levels.unique A logical specifying whether the levels of the nested
+#' factor(s) are labeled uniquely or not.
+#'  Default is FALSE, i.e., the levels of the nested factor are the same for each
+#'  level of the main factor.
+#' @details
+#' The \code{casanova} function calculates the Wald-type statistic of weighted
+#' Nelson-Aalen type integrals
+#' for general factorial survival designs. The approach allows the combination of
+#' different weights into a
+#' joint statistic. The user can choose between weights of the following form:
+#' w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
+#' r,g (including 0). The function automatically check whether the specified weights
+#' fulfill
+#' the linear independence assumption and choose a subset of linearly independent
+#' weights if the original weights violate the aforemention assumption.
 #'
-#'   The \code{NAME} function returns the test statistic as well as two
-#'   corresponding p-values: the first is based on a \eqn{\chi^2} approximation and
+#'   The \code{casanova} function returns the test statistic as well as two
+#'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
 #'   the second one is based on a permutation procedure.
 #'
-#'  @return A \code{NAME} object containing the following components:
-#'  \item{pvalues_stat}{The p-values of the multiple-direction logrank test using the
-#'    \eqn{\chi^2}-approximation (Approx.)}
-#'  \item{pvalues_per}{The p-values of the  permutationapproach}
+#'  @return A \code{casanova} object containing the following components:
+#'  \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
+#'  \item{pvalues_per}{The p-values of the permutation approach}
 #'  \item{stat}{NOCHMAL filtern NOCH NICHT DRIN}
-#'  \item{rg}{A list containg the exponents of the direction considered in the statistical analysis
-#'  \item{cross}{logical. Was the crossing direction considered in the statistical analysis}
-#'  \item{indep}{logical. Were the directions specified by the user linearly independent?}
+#'  \item{rg}{A list containg the exponents of the direction considered in the
+#'  statistical analysis
+#'  \item{cross}{logical. Was the crossing direction considered in the statistical
+#'  analysis}
+#'  \item{indep}{logical. Were the directions specified by the user linearly
+#'  independent?}
 #'  \item{nperm}{The number of permutations used for calculating the permuted p-value.
 #' @examples
 #' library("survival")
@@ -49,14 +60,12 @@
 #' ## Detailed informations:
 #' summary(out)
 #'
-#' @references Ditzhaus, M., Titel und so (Theory)
-#'
-#' Ditzhaus Titel und so (practical paper)
+#' @references Ditzhaus, M., Janssen, A. and Pauly, M. (2020). Permutation inference in factorial survival designs with the
+#'           CASANOVA. arXiv preprint (arXiv:2004.10818).
 #'
 #' @importFrom stats runif
 #'
 #'
-
 #' @export
 func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha = 0.05,
                       cross = TRUE, nested.levels.unique = FALSE, rg = list(c(0,0))){
