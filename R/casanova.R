@@ -7,7 +7,7 @@
 #'  specified.
 #' @param event The name of censoring status indicator with values 0=censored and
 #' 1=uncensored.
-#' The default choice is "event" (KANNST DU DEN DEFAULT BITTE SO EINRICHTEN?)
+#' The default choice is "event"
 #' @param data A data.frame, list or environment containing the variables in formula
 #' and the censoring status
 #' indicator. Default option is \code{NULL}.
@@ -18,7 +18,7 @@
 #'   \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
 #'  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.
 #' @param nperm The number of permutations used for calculating the permuted p-value.
-#'   The default option is 10000.
+#'   The default option is 1999.
 #' @param alpha A number specifying the significance level; the default is 0.05.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested
 #' factor(s) are labeled uniquely or not.
@@ -43,7 +43,9 @@
 #'  @return A \code{casanova} object containing the following components:
 #'  \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
 #'  \item{pvalues_per}{The p-values of the permutation approach}
-#'  \item{stat}{NOCHMAL filtern NOCH NICHT DRIN}
+#'  \item{statistics}{The value of the casanova along with degrees of freedom of the
+#'  central chi-square distribution and p-value, as well as the p-value of the
+#'   permutation procedure.}
 #'  \item{rg}{A list containg the exponents of the direction considered in the
 #'  statistical analysis
 #'  \item{cross}{logical. Was the crossing direction considered in the statistical
@@ -54,8 +56,8 @@
 #' @examples
 #' library("survival")
 #' data(veteran)
-#' out <- func_test(formula ="time ~ trt*celltype",event = "status",
-#'  data = veteran, nperm = 1000, alpha = 0.05)
+#' out <- casanova(formula ="time ~ trt*celltype",event = "status",
+#'  data = veteran)
 #'
 #' ## Detailed informations:
 #' summary(out)
@@ -64,10 +66,11 @@
 #'           CASANOVA. arXiv preprint (arXiv:2004.10818).
 #'
 #' @importFrom stats runif
-#'
+#' @importFrom GFD HN
+#' @importFrom magic adiag
 #'
 #' @export
-func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha = 0.05,
+casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
                       cross = TRUE, nested.levels.unique = FALSE, rg = list(c(0,0))){
   input_list <- list(formula = formula,time = time, data = data, nperm = nperm,
                      alpha = alpha)
@@ -125,7 +128,7 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
             if(cross == TRUE){
               weight_names <- c(weight_names,"1-2x")
             }
-            ### F?r prob
+            ### Für prob
             if(sum(unlist(lapply(rg,function(x) sum(x == c(0,0))==2))==1)==1){
               weight_names[1+which(unlist(lapply(rg,function(x) sum(x == c(0,0))==2))==1)] <-"prop"
             }
@@ -151,7 +154,6 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
     group <- rep(1:length(n),n)
     dat2$group <- group
 
-    library("magic")
     ###############################
     dat2  <- dat2[order(dat2["time"]),]
     event <- dat2[,"event"]
@@ -177,14 +179,14 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
                           dimnames = list(fac_names, weight_names))
 
 
-    #P-Werte f?r Perm
+    #P-Werte für Perm
     per <- results$Perm
     per_unlist <-  matrix(unlist(lapply(per, t)),length(hypo_matrices)*(m+1),byrow = TRUE)
     stat_Erg_unlist <- unlist(Stat_Erg)
     pvalue_per <- sapply(1:(length(hypo_matrices)*(m+1)),function(x) mean(per_unlist[x,]>stat_Erg_unlist[x]))
     pvalue_per <- matrix(pvalue_per ,length(hypo_matrices),byrow = TRUE)
     pvalue_per <- matrix(unlist(pvalue_per),length(hypo_matrices),(m+1),dimnames = list(fac_names, weight_names))
-
+    df <- sapply(1:length(hypo_matrices),function(x)rank_C[x]*m)
 
   }
   else {
@@ -260,7 +262,6 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
       stop("There is at least one factor-level combination\n           with less than 2 observations!")
     }
 
-    library("magic")
     ###############################
     dat2  <- dat2[order(dat2["time"]),]
     event <- dat2[,"event"]
@@ -286,28 +287,15 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
                           dimnames = list(fac_names, weight_names))
 
 
-
-
-    #P-Werte f?r Perm
+    #P-Werte für Perm
     per <- results$Perm
     per_unlist <-  matrix(unlist(lapply(per, t)),length(hypo_matrices)*(m+1),byrow = TRUE)
     stat_Erg_unlist <- unlist(t(Stat_Erg))
     pvalue_per <- sapply(1:(length(hypo_matrices)*(m+1)),function(x) mean(per_unlist[x,]>stat_Erg_unlist[x]))
     pvalue_per <- matrix(pvalue_per ,length(hypo_matrices),byrow = TRUE)
     pvalue_per <- matrix(unlist(pvalue_per),length(hypo_matrices),(m+1),dimnames = list(fac_names, weight_names))
+    df <- sapply(1:length(hypo_matrices),function(x)rank_C[x]*m)
 
-
-    # output$Descriptive <- descriptive
-    # output$WTS <- WTS_output
-    # output$ATS <- ATS_out
-    # output$plotting <- list(levels, fac_names, nf, TYPE,
-    #                         mu, lower, upper, fac_names_original, dat2, fl, alpha,
-    #                         nadat2, lev_names)
-    # names(output$plotting) <- c("levels", "fac_names", "nf",
-    #                             "Type", "mu", "lower", "upper", "fac_names_original",
-    #                             "dat2", "fl", "alpha", "nadat2", "lev_names")
-  # class(output) <- "GFD"
-  # return(output)
   }
   output <- list()
   output$input <- input_list
@@ -318,6 +306,11 @@ func_test <- function(formula, event ="event", data = NULL, nperm = 10000, alpha
   output$rg <- rg
   output$nperm <-nperm
 
- class(output) <- "GFDsurv"
+  output$statistic <- cbind(Stat_Erg[,1],df,pvalue_stat[,1],pvalue_per[,1])
+  rownames(output$statistic) <- fac_names
+  colnames(output$statistic) <- c("Test statistic","df","p-value", "p-value perm")
+
+
+ class(output) <- "casanova"
   return(output)
 }
