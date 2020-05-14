@@ -299,7 +299,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
   output <- list()
   output$input <- input_list
   output$pvalues_stat  <- pvalue_stat
-  output$pvalues_per <-pvalue_per
+  output$pvalues_per <- pvalue_per
   output$cross <- cross
   output$indep <- indep
   output$rg <- rg
