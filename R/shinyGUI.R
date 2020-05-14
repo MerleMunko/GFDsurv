@@ -1,3 +1,10 @@
+#' A graphical user interface for the package GFDsurv
+#'
+#'
+#' @aliases GFDsurvGUI
+#'
+#' @export
+
 GFDsurvGUI <- function() {
   requireNamespace("shiny", quietly = TRUE)
   if (!("package:shiny" %in% search())) {
