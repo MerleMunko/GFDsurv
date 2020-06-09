@@ -281,7 +281,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
     q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
     #Tabelle der P-Werte
     pvalue_stat <-  round(t(sapply(1:length(hypo_matrices), function(x) c(1-pchisq(Stat_Erg[x,1],df=rank_C[x]*m),
-                                                          1-pchisq(Stat_Erg[x,2:(m+1)],df=rank_C[x])))),3)
+                                                          1-pchisq(Stat_Erg[x,2:(m+1)],df=rank_C[x])))),4)
     pvalue_stat <- matrix(unlist(pvalue_stat),length(hypo_matrices),m+1,
                           dimnames = list(fac_names, weight_names))
 
@@ -299,13 +299,13 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
   output <- list()
   output$input <- input_list
   output$pvalues_stat  <- pvalue_stat
-  output$pvalues_per <- pvalue_per
+  output$pvalues_per <-  pvalue_per
   output$cross <- cross
   output$indep <- indep
   output$rg <- rg
   output$nperm <-nperm
 
-  output$statistic <- cbind(Stat_Erg[,1],df,pvalue_stat[,1],pvalue_per[,1])
+  output$statistic <- cbind(Stat_Erg[,1],df,pvalue_stat[,1],round(pvalue_per[,1],4))
   rownames(output$statistic) <- fac_names
   colnames(output$statistic) <- c("Test statistic","df","p-value", "p-value perm")
 
@@ -313,3 +313,4 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
  class(output) <- "casanova"
   return(output)
 }
+

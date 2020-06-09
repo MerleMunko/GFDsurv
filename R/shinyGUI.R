@@ -15,7 +15,7 @@ GFDsurvGUI <- function() {
 
       ui <- fluidPage(theme = shinythemes::shinytheme("cerulean"),
                       shinyjs::useShinyjs(),
-                      titlePanel("Tests for GFDsurv?"),
+                      titlePanel("Tests for GFDsurv"),
                       sidebarLayout(
                         sidebarPanel(
                           splitLayout(
@@ -25,7 +25,10 @@ GFDsurvGUI <- function() {
                                         "text/comma-separated-values,text/plain",
                                         ".csv")),
                             checkboxInput("header", "Header", TRUE),
-                            textInput("sep","Seperater")
+                            selectInput("sep","Seperator in csv", c(",",
+                                                                    ";",
+                                                                    ".",
+                                                                    "|"))
 
                           ),
 
@@ -59,7 +62,7 @@ GFDsurvGUI <- function() {
 
 
                           splitLayout(
-                            numericInput("nperm", "nperm/nbsp", value = 1999),
+                            numericInput("nperm", "nperm", value = 1999),
 
                             numericInput("alpha", "Alpha", value = 0.05, min = 0, max = 1)
 
@@ -121,7 +124,7 @@ GFDsurvGUI <- function() {
            # one is equal to `A` only
            if (input$Method == "casanova") {
              selectInput(inputId = 'dynamic',
-                         label = "event",
+                         label = "Name of event",
                          choices = colnames(datasetInput()))
            } else {
              return(NULL)
