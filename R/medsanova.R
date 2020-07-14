@@ -1,0 +1,209 @@
+medSANOVA
+
+medSANOVA <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
+                       var_est= "twosided",
+                       nested.levels.unique = FALSE){
+  input_list <- list(formula = formula, event ="event", data = data, nperm = nperm,
+                     alpha = alpha)
+  #Zeit und in Formel einbinden
+  formula2 <-  paste0(formula,"*",event)
+  dat <- model.frame(formula2, data)
+  #n
+  subject <- 1:nrow(dat)
+  n_all <- length(subject)
+
+  formula <- as.formula(formula)
+  nf <- ncol(dat) - 1 - 1
+  nadat <- names(dat)
+  if(var_est == "twosided"){var_est = 2}
+  if(var_est == "onesided"){var_est = 3}
+
+  names(dat) <- c("Var",nadat[2:(1+nf)],"event")
+
+  dat2 <- data.frame(dat, subject = subject)
+
+  ###Daten richtig ordnen und dann nochmal schauen
+
+  nadat2 <- nadat[-c(1,nf+2)]
+  #dat2[,"time"] <- dat2[,"time"]  + runif(length(dat2[,"time"])) * 10^-7
+
+
+
+
+  fl <- NA
+  for (aa in 1:nf) {
+    fl[aa] <- nlevels(as.factor(dat[, aa + 1]))
+  }
+  levels <- list()
+  for (jj in 1:nf) {
+    levels[[jj]] <- levels(as.factor(dat[, jj + 1]))
+  }
+  lev_names <- expand.grid(levels)
+  if (nf == 1) {
+    dat2 <- dat2[order(dat2[, 2]), ]
+    response <- dat2[, 1]
+    nr_hypo <- attr(terms(formula), "factors")
+    fac_names <- colnames(nr_hypo)
+    n <- plyr::ddply(dat2, nadat2, plyr::summarise, Measure = length(subject),
+                     .drop = F)$Measure
+    hypo_matrices <- list(diag(fl) - matrix(1/fl, ncol = fl, nrow = fl))
+    group <- rep(1:length(n),n)
+    dat2$group <- group
+
+    ###############################
+    dat2  <- dat2[order(dat2["Var"]),]
+    event <- dat2[,"event"]
+    group <- dat2$group
+
+    results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
+
+
+    #Ergebnis in Tabellenform
+    m <- length(w)
+    Stat_Erg <- results$Stat
+    Stat_Erg  <- matrix(unlist(Stat_Erg),length(hypo_matrices),
+                        m+1,byrow = TRUE)
+    rank_C <- unlist(lapply(hypo_matrices, function(x) qr(x)$rank))
+    #Quantilmatrix
+    q_uncon <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]))
+    q_uncon_c <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]*m))
+    q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
+    #Tabelle der P-Werte
+    pvalue_stat <-  round(t(sapply(1:length(hypo_matrices), function(x) c(1-pchisq(Stat_Erg[x,1],df=rank_C[x]*m),
+                                                                          1-pchisq(Stat_Erg[x,2:(m+1)],df=rank_C[x])))),3)
+    pvalue_stat <- matrix(unlist(pvalue_stat),length(hypo_matrices),m+1,
+                          dimnames = list(fac_names, weight_names))
+
+
+    #P-Werte für Perm
+    per <- results$Perm
+    per_unlist <-  matrix(unlist(lapply(per, t)),length(hypo_matrices)*(m+1),byrow = TRUE)
+    stat_Erg_unlist <- unlist(Stat_Erg)
+    pvalue_per <- sapply(1:(length(hypo_matrices)*(m+1)),function(x) mean(per_unlist[x,]>stat_Erg_unlist[x]))
+    pvalue_per <- matrix(pvalue_per ,length(hypo_matrices),byrow = TRUE)
+    pvalue_per <- matrix(unlist(pvalue_per),length(hypo_matrices),(m+1),dimnames = list(fac_names, weight_names))
+    df <- sapply(1:length(hypo_matrices),function(x)rank_C[x]*m)
+
+  }
+  else {
+    lev_names <- lev_names[do.call(order, lev_names[, 1:nf]),
+                           ]
+    dat2 <- dat2[do.call(order, dat2[, 2:(nf + 1)]), ]
+    response <- dat2[, 1]
+    nr_hypo <- attr(terms(formula), "factors")
+    fac_names <- colnames(nr_hypo)
+    fac_names_original <- fac_names
+    perm_names <- t(attr(terms(formula), "factors")[-1, ])
+    ###
+
+    n <- plyr::ddply(dat2, nadat2, plyr::summarise, Measure = length(subject),
+                     .drop = F)$Measure
+    group <- rep(1:length(n),n)
+    dat2$group <- group
+    if (length(fac_names) != nf && 2 %in% nr_hypo) {
+      stop("A model involving both nested and crossed factors is\n           not impemented!")
+    }
+    if (length(fac_names) == nf && nf >= 4) {
+      stop("Four- and higher way nested designs are\n           not implemented!")
+    }
+    if (length(fac_names) == nf) {
+      TYPE <- "nested"
+      if (nested.levels.unique) {
+        n <- n[n != 0]
+        blev <- list()
+        lev_names <- list()
+        for (ii in 1:length(levels[[1]])) {
+          blev[[ii]] <- levels(as.factor(dat[, 3][dat[,
+                                                      2] == levels[[1]][ii]]))
+          lev_names[[ii]] <- rep(levels[[1]][ii], length(blev[[ii]]))
+        }
+        if (nf == 2) {
+          lev_names <- as.factor(unlist(lev_names))
+          blev <- as.factor(unlist(blev))
+          lev_names <- cbind.data.frame(lev_names, blev)
+        }
+        else {
+          lev_names <- lapply(lev_names, rep, length(levels[[3]])/length(levels[[2]]))
+          lev_names <- lapply(lev_names, sort)
+          lev_names <- as.factor(unlist(lev_names))
+          blev <- lapply(blev, rep, length(levels[[3]])/length(levels[[2]]))
+          blev <- lapply(blev, sort)
+          blev <- as.factor(unlist(blev))
+          lev_names <- cbind.data.frame(lev_names, blev,
+                                        as.factor(levels[[3]]))
+        }
+        if (nf == 2) {
+          fl[2] <- fl[2]/fl[1]
+        }
+        else if (nf == 3) {
+          fl[3] <- fl[3]/fl[2]
+          fl[2] <- fl[2]/fl[1]
+        }
+      }
+      hypo_matrices <- GFD:::HN(fl)
+    }
+    else {
+      TYPE <- "crossed"
+      hypo_matrices <- GFD:::HC(fl, perm_names, fac_names)[[1]]
+      fac_names <- GFD:::HC(fl, perm_names, fac_names)[[2]]
+    }
+    if (length(fac_names) != length(hypo_matrices)) {
+      stop("Something is wrong: Perhaps a missing interaction term in formula?")
+    }
+    if (TYPE == "nested" & 0 %in% n & nested.levels.unique ==
+        FALSE) {
+      stop("The levels of the nested factor are probably labeled uniquely,\n           but nested.levels.unique is not set to TRUE.")
+    }
+    if (0 %in% n || 1 %in% n) {
+      stop("There is at least one factor-level combination\n           with less than 2 observations!")
+    }
+
+    ###############################
+    dat2  <- dat2[order(dat2["Var"]),]
+    event <- dat2[,"event"]
+    group <- dat2$group
+
+    dat3 <- dat2[,c("Var","event","group")]
+
+
+    erg_stat <-  wrap_sim2(dat3,group = dat3[,3],hypo_matrices, var_est = var_est)
+    out <- list()
+
+    erg_perm <- perm_fun(dat3, n_perm, hypo_matrices, alpha, var_est = var_est)
+
+    for(j in 1:length(hypo_matrices)){
+      q_perm <- erg_perm$test_stat_erg
+      t_int_perm <- mean(erg_stat[paste0("int_", j)] <= q_perm[paste0("int_", j), ], na.rm = TRUE)
+      t_int_chi <- 1-pchisq(erg_stat[paste0("int_", j)], df = qr(hypo_matrices[[j]])$rank )
+
+      t_int_perm <- ifelse(is.nan(t_int_perm), NA, t_int_perm)
+
+      out1 <- c("perm" = t_int_perm, "chi" = t_int_chi)
+      out[[j]] <- out1
+    }
+
+    out <- matrix(unlist(out),length(hypo_matrices),byrow=T)
+
+    df <- unlist(lapply(hypo_matrices, function(x) qr(x)$rank))
+
+  }
+ 
+
+   output <- list()
+   output$input <- input_list
+   output$nperm <-nperm
+
+   output$statistic <- cbind(erg_stat,df,round(out[,2],3),round(out[,1],3))
+   rownames(output$statistic) <- fac_names
+   colnames(output$statistic) <- c("Test statistic","df","p-value", "p-value perm")
+   class(output) <- "medsanova"
+   return(output)
+
+}
+
+medSANOVA(formula= "eventT ~ treat*prot_groups", event ="dc",
+          data = data, nperm = 1999, alpha = 0.05,
+          var_est= "onesided",nested.levels.unique = FALSE)
+
+test$statistic
+
