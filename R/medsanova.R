@@ -58,10 +58,10 @@
 #' @export
 #'
 medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
-                       var_est= "twosided",
+                       var_method = "twosided", var_level = 0.9,
                        nested.levels.unique = FALSE){
   input_list <- list(formula = formula, event ="event", data = data, nperm = nperm,
-                     alpha = alpha)
+                     alpha = alpha, var_level = var_level)
   #Zeit und in Formel einbinden
   formula2 <-  paste0(formula,"*",event)
   dat <- model.frame(formula2, data)
@@ -72,8 +72,8 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
   formula <- as.formula(formula)
   nf <- ncol(dat) - 1 - 1
   nadat <- names(dat)
-  if(var_est == "twosided"){var_est = 2}
-  if(var_est == "onesided"){var_est = 3}
+  if(var_method == "twosided"){var_method = 2}
+  if(var_method == "onesided"){var_method = 3}
 
   names(dat) <- c("Var",nadat[2:(1+nf)],"event")
 
@@ -112,34 +112,28 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
     event <- dat2[,"event"]
     group <- dat2$group
 
-    results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
+    dat3 <- dat2[,c("Var","event","group")]
 
 
-    #Ergebnis in Tabellenform
-    m <- length(w)
-    Stat_Erg <- results$Stat
-    Stat_Erg  <- matrix(unlist(Stat_Erg),length(hypo_matrices),
-                        m+1,byrow = TRUE)
-    rank_C <- unlist(lapply(hypo_matrices, function(x) qr(x)$rank))
-    #Quantilmatrix
-    q_uncon <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]))
-    q_uncon_c <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]*m))
-    q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
-    #Tabelle der P-Werte
-    pvalue_stat <-  round(t(sapply(1:length(hypo_matrices), function(x) c(1-pchisq(Stat_Erg[x,1],df=rank_C[x]*m),
-                                                                          1-pchisq(Stat_Erg[x,2:(m+1)],df=rank_C[x])))),3)
-    pvalue_stat <- matrix(unlist(pvalue_stat),length(hypo_matrices),m+1,
-                          dimnames = list(fac_names, weight_names))
+    erg_stat <-  wrap_sim2(dat3,group = dat3[,3],hypo_matrices, var_method = var_method)
+    out <- list()
 
+    erg_perm <- perm_fun(dat3, nperm, hypo_matrices, alpha, var_method = var_method)
 
-    #P-Werte für Perm
-    per <- results$Perm
-    per_unlist <-  matrix(unlist(lapply(per, t)),length(hypo_matrices)*(m+1),byrow = TRUE)
-    stat_Erg_unlist <- unlist(Stat_Erg)
-    pvalue_per <- sapply(1:(length(hypo_matrices)*(m+1)),function(x) mean(per_unlist[x,]>stat_Erg_unlist[x]))
-    pvalue_per <- matrix(pvalue_per ,length(hypo_matrices),byrow = TRUE)
-    pvalue_per <- matrix(unlist(pvalue_per),length(hypo_matrices),(m+1),dimnames = list(fac_names, weight_names))
-    df <- sapply(1:length(hypo_matrices),function(x)rank_C[x]*m)
+    for(j in 1:length(hypo_matrices)){
+      q_perm <- erg_perm$test_stat_erg
+      t_int_perm <- mean(erg_stat[paste0("int_", j)] <= q_perm[paste0("int_", j), ], na.rm = TRUE)
+      t_int_chi <- 1-pchisq(erg_stat[paste0("int_", j)], df = qr(hypo_matrices[[j]])$rank )
+
+      t_int_perm <- ifelse(is.nan(t_int_perm), NA, t_int_perm)
+
+      out1 <- c("perm" = t_int_perm, "chi" = t_int_chi)
+      out[[j]] <- out1
+    }
+
+    out <- matrix(unlist(out),length(hypo_matrices),byrow=T)
+
+    df <- unlist(lapply(hypo_matrices, function(x) qr(x)$rank))
 
   }
   else {
@@ -223,10 +217,12 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
     dat3 <- dat2[,c("Var","event","group")]
 
 
-    erg_stat <-  wrap_sim2(dat3,group = dat3[,3],hypo_matrices, var_est = var_est)
+    erg_stat <-  wrap_sim2(dat3,group = dat3[,3],hypo_matrices,
+                           var_method = var_method, var_level = var_level)
     out <- list()
 
-    erg_perm <- perm_fun(dat3, n_perm, hypo_matrices, alpha, var_est = var_est)
+    erg_perm <- perm_fun(dat3, nperm, hypo_matrices, alpha,
+                         var_method = var_method, var_level = var_level)
 
     for(j in 1:length(hypo_matrices)){
       q_perm <- erg_perm$test_stat_erg
@@ -258,9 +254,11 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
 
 }
 
-medSANOVA(formula= "eventT ~ treat*prot_groups", event ="dc",
-          data = data, nperm = 1999, alpha = 0.05,
-          var_est= "onesided",nested.levels.unique = FALSE)
+medsanova(formula= "eventT ~ treat*prot_groups", event ="dc",
+          data = data, nperm = 1, alpha = 0.05,var_level = 0.9,
+          var_method= "onesided",nested.levels.unique = FALSE)
 
-test$statistic
 
+
+data <- read.csv("Testdaten.csv")
+data

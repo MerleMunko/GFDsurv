@@ -78,7 +78,8 @@ KME <- function(values, group = values[, 3]) {
 # a         - numeric value between 0 and 1, alpha level, default 0.1
 #Output:    Standard deviation estimated with the formula derived from interval
 
-int_sd2 <- function(values, a = 0.1, n_all) {
+int_sd2 <- function(values, var_level  = var_level , n_all) {
+  a <- 1 - var_level
   n <- nrow(values)
   indi <- values[, 1] <= values[, 5]
 
@@ -129,7 +130,8 @@ int_sd2 <- function(values, a = 0.1, n_all) {
 # a         - numeric value between 0 and 1, alpha level, default 0.1
 #Output:    Standard deviation estimated with the formula derived from interval
 
-int_sd3 <- function(values, a = 0.1, n_all) {
+int_sd3 <- function(values, var_level  = var_level, n_all) {
+  a <- 1 - var_level
   n <- nrow(values)
   indi <- values[, 1] <= values[, 5]
 
@@ -163,8 +165,8 @@ int_sd3 <- function(values, a = 0.1, n_all) {
 #             is the third column of the values, the groups drawn by data_gen
 #Output:    Standard deviation estimated with interval formula for each group
 
-int_var_groups <- function(values, alpha = 0.1, group = values[, 3],
-                           var_est) {
+int_var_groups <- function(values, var_level = var_level, group = values[, 3],
+                           var_method) {
   n_all <- nrow(values)
   n_group <- max(group)
   erg <- numeric(n_group)
@@ -175,8 +177,8 @@ int_var_groups <- function(values, alpha = 0.1, group = values[, 3],
 
     #calculate for each group
 
-    temp <- do.call(paste0("int_sd",var_est),
-                    args = list(values = values2, a = alpha, n_all = n_all))
+    temp <- do.call(paste0("int_sd",var_method),
+                    args = list(values = values2, var_level = var_level, n_all = n_all))
     erg[i] <- temp
     med[i] <- values2[1, 5]
 
@@ -190,80 +192,6 @@ int_var_groups <- function(values, alpha = 0.1, group = values[, 3],
 
 #int_var_groups(test_KME)
 
-
-
-
-#Null hypothesis matrix
-
-#classical null hypothesis
-#Input:
-# n_group:   - integer, number of groups
-#Output:
-# Returns the matrix testing the Nullhypothesis for the respective number of
-# groups
-null_mat_x1 <- function(n_group_a, n_group_b){
-  n_group  <- n_group_a * n_group_b
-  return(diag(n_group) - matrix(1, n_group, n_group)/n_group)
-}
-#null_mat_clas(5)
-
-
-
-#No main effect of factor a
-#Input:
-# n_group_a:  - integer, number of levels in factor a
-# n_group_b:  - integer, number of levels in factor b
-#Output:
-# Returns the matrix testing the Nullhypothesis
-null_mat_A <- function(n_group_a, n_group_b) {
-  pa <- diag(n_group_a) - matrix(1, n_group_a, n_group_a)/n_group_a
-  jbb <- matrix(1, n_group_b, n_group_b)/n_group_b
-  ha <- pa %x% jbb
-
-  return(ha)
-}
-
-#No main effect of factor B
-#Input:
-# n_group_a:  - integer, number of levels in factor a
-# n_group_b:  - integer, number of levels in factor b
-#Output:
-# Returns the matrix testing the Nullhypothesis
-null_mat_B <- function(n_group_a, n_group_b) {
-  pb <- diag(n_group_b) - matrix(1, n_group_b, n_group_b)/n_group_b
-  jaa <- matrix(1, n_group_a, n_group_a)/n_group_a
-  ha <- jaa %x% pb
-
-  return(ha)
-}
-
-
-#null_mat_fac(2, 2)
-
-#No interaction effect
-#Input:
-# n_group_a:  - integer, number of levels in factor a
-# n_group_b:  - integer, number of levels in factor b
-#Output:
-# Returns the matrix testing the Nullhypothesis
-null_mat_AB <- function(n_group_a, n_group_b){
-  pa <- diag(n_group_a) - matrix(1, n_group_a, n_group_a)/n_group_a
-  pb <- diag(n_group_b) - matrix(1, n_group_b, n_group_b)/n_group_b
-  hab <- pa %x% pb
-
-  return(hab)
-}
-
-#null_mat_int(2, 2)
-
-#projector
-#Input:
-# h       - Matrix
-#Output: projected matrix
-
-project <- function(h) {
-  return(t(h) %*% MASS:::ginv(h %*% t(h)) %*% h)
-}
 
 
 #Teststatistic
@@ -293,7 +221,7 @@ test_stat <- function(values, t_mat, var_out) {
 # values:   matrix. The data to start with
 # group:    integer vector containing the group of the observations. Default is
 #           the third column of the values, the groups drawn by data_gen
-wrap_sim2 <- function(values, group = values[, 3], t_mat_list, var_est){
+wrap_sim2 <- function(values, group = values[, 3], t_mat_list, var_method, var_level){
 
   C_mat <- function(x){
     t(x) %*% MASS::ginv( x %*% t(x) ) %*% x
@@ -305,7 +233,7 @@ wrap_sim2 <- function(values, group = values[, 3], t_mat_list, var_est){
   values[, 3] <- group
   values_KME <- KME(values, group = values[, 3])
 
-  var_int <- int_var_groups(values_KME, group = values[ ,3], var_est = var_est)
+  var_int <- int_var_groups(values_KME,var_level = var_level, group = values[ ,3], var_method = var_method)
   erg_int <- list()
   for( i in 1:length(t_mat_list)){
     erg_int[[i]] <- test_stat(values, t_mat_list[[i]], var_out = var_int)
@@ -326,13 +254,13 @@ wrap_sim2 <- function(values, group = values[, 3], t_mat_list, var_est){
 #Permutations
 #Input:
 # values    - Matrix, Data to be entered in Simulation
-# n_perm    - Integer, Number of permutations
+# nperm    - Integer, Number of permutations
 # t_mat     - matrix, test matrix
 #Output
 # Vector with the quantiles of the test-statistics and number of permutations
 #
 
-perm_fun <- function(values, n_perm, t_mat_list, alpha , var_est ) {
+perm_fun <- function(values, nperm, t_mat_list, alpha , var_method, var_level = var_level) {
 
   C_mat <- function(x){
     t(x) %*% MASS::ginv( x %*% t(x) ) %*% x
@@ -342,10 +270,10 @@ perm_fun <- function(values, n_perm, t_mat_list, alpha , var_est ) {
 
   values2 <- sort_data(values)
   group_org <- values2[, 3]
-  group_new <- replicate(n_perm, sample(group_org))
+  group_new <- replicate(nperm, sample(group_org))
   test_stat_erg <- apply(group_new, 2,
                          function(x) wrap_sim2(values = values2, group = x,
-                                              t_mat_list = t_mat_list, var_est = var_est) )
+                                              t_mat_list = t_mat_list, var_method = var_method, var_level = var_level) )
   q <- list()
   for( i in 1:length(t_mat_list)){
     q <- unname(quantile(test_stat_erg[paste0("int_", i), ], 1-alpha, na.rm = TRUE))
@@ -355,31 +283,3 @@ perm_fun <- function(values, n_perm, t_mat_list, alpha , var_est ) {
   return(list(q = q, test_stat_erg = test_stat_erg ) )
 }
 
-#perm_fun(test_dat, 1000, null_mat_clas(3))
-
-
-
-#wrapper fuer data example
-data_test <- function(values, n_perm, t_mat_list, hyp_list, chi_quant, group_s, a, b, var_est ) {
-  values <- sort_data(values)
-  erg_stat <- wrap_sim(values, t_mat_list = t_mat_list, hyp_list = hyp_list, var_est = var_est)
-
-  out <- list()
-
-  erg_perm <- perm_fun(values, n_perm, t_mat_list = t_mat_list, hyp_list = hyp_list, var_est = var_est)
-  for(hyp in hyp_list){
-    q_perm <- erg_perm$test_stat_erg
-    t_int_perm <- mean(erg_stat[paste0("int_", hyp)] <= q_perm[paste0("int_", hyp), ], na.rm = TRUE)
-    t_int_chi <- 1-pchisq(erg_stat[paste0("int_", hyp)], df = qr(t_mat_list[[hyp]])$rank )
-
-    t_int_perm <- ifelse(is.nan(t_int_perm), NA, t_int_perm)
-
-    out1 <- c("perm" = t_int_perm, "chi" = t_int_chi)
-    out[[hyp]] <- out1
-  }
-  return(out)
-}
-
-C_mat <- function(x){
-  t(x) %*% MASS::ginv( x %*% t(x) ) %*% x
-}
