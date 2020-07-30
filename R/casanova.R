@@ -1,7 +1,9 @@
+
 #' CASANOVA: Cumulative Aalen survival analyis-of-variance
 #'
-#' The function \code{casanova} calculates the p-values of the multiple-direction logrank test based
-#' on the \eqn{\chi^2}-approximation and the permutation approach.
+#' The function \code{casanova} calculates the Wald-type statistic based on the
+#' combination of differently weighted Nelson-Aalen-type integrals. Respective p-values
+#' are obtained by a \eqn{\chi^2}-approximation and a permutation approach, respectively.
 #' @param formula A model \code{formula} object. The left hand side contains the time variable and the right
 #'  hand side contains the factor variables of interest. An interaction term must be
 #'  specified.
@@ -27,13 +29,13 @@
 #' @details
 #' The \code{casanova} function calculates the Wald-type statistic of weighted
 #' Nelson-Aalen type integrals
-#' for general factorial survival designs. The approach allows the combination of
+#' for general factorial survival designs. Crossed as well as hierachically nested designs are
+#' implemented. Moreover, the approach allows the combination of
 #' different weights into a
 #' joint statistic. The user can choose between weights of the following form:
 #' w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
 #' r,g (including 0). The function automatically check whether the specified weights
-#' fulfill
-#' the linear independence assumption and choose a subset of linearly independent
+#' fulfill the linear independence assumption and choose a subset of linearly independent
 #' weights if the original weights violate the aforemention assumption.
 #'
 #'   The \code{casanova} function returns the test statistic as well as two
@@ -63,12 +65,13 @@
 #' summary(out)
 #'
 #' @references Ditzhaus, M., Janssen, A. and Pauly, M. (2020). Permutation inference in factorial survival designs with the
-#'           CASANOVA. arXiv preprint (arXiv:2004.10818).
+#'           CASANOVA. ArXiv preprint (arXiv:2004.10818).
 #'
 #' @importFrom stats runif
 #' @importFrom magic adiag
 #'
 #' @export
+#'
 casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
                       cross = TRUE, nested.levels.unique = FALSE, rg = list(c(0,0))){
   input_list <- list(formula = formula,time = time, data = data, nperm = nperm,
