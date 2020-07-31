@@ -34,7 +34,8 @@ GFDsurvGUI <- function() {
 
                           selectInput("Method", "Select Testing Method:",
                                       c("CASANOVA: Cumulative Aalen survival analyis-of-variance" = "casanova",
-                                        "medSANOVA: Median survival analyis-of-variance"= "medSANOVA")),
+                                        "medSANOVA: Median survival analyis-of-variance"= "medSANOVA",
+                                        "copSANOVA: concordance probability SANOVA"="copSANOVA")),
 
                           splitLayout(
 
@@ -45,26 +46,37 @@ GFDsurvGUI <- function() {
 
                           ),
 
+                          splitLayout(cellWidths = c("20%","60%","20%"),
+
+                            checkboxGroupInput("Weights", "Choose weights:",selected = c("crossing","proportional"),
+                                      choiceNames = list("Crossing", "Proportional"),
+                                      choiceValues = list("crossing", "proportional")),
 
 
-                          mainPanel(strong("ToDo"))
-                          ,
-
-                          splitLayout(cellWidths = c("20%","20%","60%"),
-                            checkboxInput("crossing", "Crossing", TRUE),
-                            checkboxInput("proportional", "Proportional", TRUE),
                             selectInput("weights1","User specifeid directions of form w(x) = x^r(1-x)^g",
                                         paste0("r = ",expand.grid(1:10,1:10)[,1],
                                                ", g = ",expand.grid(1:10,1:10)[,2]),
                                         multiple=TRUE,selectize = TRUE)
 
+
                           ),
 
-                          radioButtons("variante", "Variance estimator:",
-                                       c("two.sided" = "twosided",
-                                         "one.sided"= "onesided"), inline = TRUE),
+
+                          splitLayout(cellWidths = c("30%","70%"),
+
+                            radioButtons("variante", "Variance estimation based on",
+                                       c("one.sided"= "onesided",
+                                         "two.sided" = "twosided"), inline = TRUE),
+
+                            numericInput("var_level", "confidence intervalle with level",
+                                                   min = 0, max = 1,
+                                                   value = 0.05, width = "20%")
+                          ),
+
+
 
                           splitLayout(
+
                             numericInput("nperm", "nperm", value = 1999),
 
                             numericInput("alpha", "Alpha", value = 0.05, min = 0, max = 1)
@@ -101,8 +113,7 @@ GFDsurvGUI <- function() {
            if (input$Method != "casanova") {
              # data  <- as.data.frame(datasetInput())
 
-             shinyjs::hide("proportional")
-             shinyjs::hide("crossing")
+             shinyjs::hide("Weights")
              shinyjs::hide("weights1")
 
            }
@@ -111,8 +122,7 @@ GFDsurvGUI <- function() {
            if (input$Method == "casanova") {
              # data  <- as.data.frame(datasetInput())
 
-             shinyjs::show("proportional")
-             shinyjs::show("crossing")
+             shinyjs::show("Weights")
              shinyjs::show("weights1")
 
 
@@ -123,11 +133,14 @@ GFDsurvGUI <- function() {
            if (input$Method != "medSANOVA") {
              # data  <- as.data.frame(datasetInput())
              shinyjs::hide("variante")
+             shinyjs::hide("var_level")
 
            }
            if (input$Method == "medSANOVA") {
              # data  <- as.data.frame(datasetInput())
              shinyjs::show("variante")
+             shinyjs::show("var_level")
+
 
            }
 

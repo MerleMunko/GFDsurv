@@ -1,11 +1,13 @@
-#FIXME: - mehrere Hypothesen parallel
-#FIXME. - beispiel testen
-#FIXME: output festlegen
+#FIXME: - mehrere Hypothesen parallel -ich
+#FIXME. - beispiel testen - marc und ich
+#FIXME: output festlegen- besprechung
+#FIXME: tau -optionen -besprechung
 
 copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999, alpha = 0.05,
                       weights = "pois",
                      nested.levels.unique = FALSE){
-  input_list <- list(formula = formula,time = time, data = data, nperm = nperm,
+  input_list <- list(formula = formula,time = time, data = data, BSiter = BSiter,
+                     weights = weights,
                      alpha = alpha)
   #Zeit und in Formel einbinden
   formula2 <-  paste0(formula,"*",event)
@@ -201,7 +203,8 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999, alpha
 
 }
 set.seed(1)
-datatest1 <- copsanova("exit ~ sex*treat", "to", data = data, nperm = 1999, alpha = 0.05,
+datatest1 <- copsanova("exit ~ sex*treat", "to", data = data, BSiter = 99, alpha = 0.05,
+                       weights = "pois",
           nested.levels.unique = FALSE)
 
 sort(datatest1[[2]][[6]]$exit)
