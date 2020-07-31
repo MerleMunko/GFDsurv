@@ -57,6 +57,9 @@
 #'
 #' @export
 #'
+#'
+# FIXME: test mit nur einer Einflussvariable
+
 medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
                        var_method = "twosided", var_level = 0.9,
                        nested.levels.unique = FALSE){
@@ -79,10 +82,7 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
 
   dat2 <- data.frame(dat, subject = subject)
 
-  ###Daten richtig ordnen und dann nochmal schauen
-
   nadat2 <- nadat[-c(1,nf+2)]
-  #dat2[,"time"] <- dat2[,"time"]  + runif(length(dat2[,"time"])) * 10^-7
 
 
 
@@ -111,14 +111,14 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
     dat2  <- dat2[order(dat2["Var"]),]
     event <- dat2[,"event"]
     group <- dat2$group
-
     dat3 <- dat2[,c("Var","event","group")]
 
-
-    erg_stat <-  wrap_sim2(dat3,group = dat3[,3],hypo_matrices, var_method = var_method)
+    erg_stat <-  wrap_sim2(dat3,group = dat3[,3],hypo_matrices,
+                           var_method = var_method, var_level = var_level)
     out <- list()
 
-    erg_perm <- perm_fun(dat3, nperm, hypo_matrices, alpha, var_method = var_method)
+    erg_perm <- perm_fun(dat3, nperm, hypo_matrices, alpha,
+                         var_method = var_method, var_level = var_level)
 
     for(j in 1:length(hypo_matrices)){
       q_perm <- erg_perm$test_stat_erg
@@ -255,10 +255,10 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
 }
 
 medsanova(formula= "eventT ~ treat*prot_groups", event ="dc",
-          data = data, nperm = 1, alpha = 0.05,var_level = 0.9,
+          data = data, nperm = 10, alpha = 0.5,var_level = 0.95,
           var_method= "onesided",nested.levels.unique = FALSE)
 
 
 
-data <- read.csv("Testdaten.csv")
+data <- read.csv("C:/Users/stein/Desktop/Quatsch/Testdaten.csv")
 data
