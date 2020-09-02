@@ -289,10 +289,13 @@ test.data <- function(data, n, BSiter, alpha, Gewichte, c.matrix){
   # 4. Gewichte wird beim BS benoetigt, um die Verteilung der Gewichte G anzugeben (m?glich ist Gewichte = "pois", "rade", "norm", siehe oben es geht auch weird ...
   # 5. c.matrix ist die Kontrastmatrix zum Testen von Cp=0
 
-  #print(c.matrix)
-  #print(ginv(c.matrix %*% t(c.matrix)))
+  C_mat <- function(x){
+    t(x) %*% MASS::ginv( x %*% t(x) ) %*% x
+  }
 
-  T.matrix <- t(c.matrix) %*% ginv(c.matrix %*% t(c.matrix)) %*% c.matrix
+  T.matrix <- lapply(c.matrix, C_mat)
+  print(T.matrix)
+
 
   no.groups <- length(n)
   p.matrix <- matrix(0, no.groups, no.groups)
@@ -348,20 +351,35 @@ test.data <- function(data, n, BSiter, alpha, Gewichte, c.matrix){
 
     temp <- cov.matrix(n, times, KME, at.risk, oneMinusDeltaA, NULL, NULL, NULL)
     V <- temp$V
-    FNT <- c(sum(n) * t(p.vec) %*% T.matrix %*% p.vec / tr(T.matrix %*% V))
+    print(T.matrix)
+
+    FNT_mat <- function(x){
+      c(sum(n) * t(p.vec) %*% x %*% p.vec / tr(x %*% V))
+    }
+
+    FNT <-  lapply(T.matrix, FNT_mat)
 
     #print(p.vec)
     #print(V)
     #print(T.matrix)
 
     ## Bestimme das Quantil mittels DDMB
-    DDMB.teststats <- DDMB.quant.discrete(at.risk, n, ntime, times = temp$all.times, BSiter, Gewichte, deltaN = n.event, oneMinusDeltaA = oneMinusDeltaA, KME=KME, finds = temp$finds, zeros = temp$zeros, T.matrix)
+
+
+    DDMB.quant.discrete_mat <- function(x){
+      DDMB.quant.discrete(at.risk, n, ntime, times = temp$all.times, BSiter, Gewichte, deltaN = n.event, oneMinusDeltaA = oneMinusDeltaA, KME=KME, finds = temp$finds, zeros = temp$zeros, x)
+      }
+    DDMB.teststats <- lapply(T.matrix, DDMB.quant.discrete_mat)
     #q.alpha.discrete <- quantile(DDMB.teststats, probs = 1-alpha)
 
-    #print(DDMB.teststats)
+    print(DDMB.teststats)
     #print(FNT)
     #print(BSiter)
 
+
+    sum_mat <- function(x,y){
+      sum(c(x, y) >= y) / (BSiter+1)
+      }
     sum(c(DDMB.teststats, FNT) >= FNT) / (BSiter+1)
     # ifelse(FNT > q.alpha.discrete, 1, 0)
     #, FNT = FNT, DDMB.teststats = DDMB.teststats)

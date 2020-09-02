@@ -21,6 +21,7 @@ for( sex in unique(data0$sex)){
   }
 }
 
+######FIXME: TAUS
 for(i in 1:6){
   print(max(data1[[i]][data1[[i]]$to ==1,]$exit))
 }

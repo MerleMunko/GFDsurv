@@ -1,5 +1,4 @@
 #FIXME: - mehrere Hypothesen parallel -ich
-#FIXME. - beispiel testen - marc und ich
 #FIXME: output festlegen- besprechung
 #FIXME: tau -optionen -besprechung
 
@@ -54,32 +53,6 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999, alpha
 
     results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
 
-
-    #Ergebnis in Tabellenform
-    m <- length(w)
-    Stat_Erg <- results$Stat
-    Stat_Erg  <- matrix(unlist(Stat_Erg),length(hypo_matrices),
-                        m+1,byrow = TRUE)
-    rank_C <- unlist(lapply(hypo_matrices, function(x) qr(x)$rank))
-    #Quantilmatrix
-    q_uncon <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]))
-    q_uncon_c <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]*m))
-    q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
-    #Tabelle der P-Werte
-    pvalue_stat <-  round(t(sapply(1:length(hypo_matrices), function(x) c(1-pchisq(Stat_Erg[x,1],df=rank_C[x]*m),
-                                                                          1-pchisq(Stat_Erg[x,2:(m+1)],df=rank_C[x])))),3)
-    pvalue_stat <- matrix(unlist(pvalue_stat),length(hypo_matrices),m+1,
-                          dimnames = list(fac_names, weight_names))
-
-
-    #P-Werte für Perm
-    per <- results$Perm
-    per_unlist <-  matrix(unlist(lapply(per, t)),length(hypo_matrices)*(m+1),byrow = TRUE)
-    stat_Erg_unlist <- unlist(Stat_Erg)
-    pvalue_per <- sapply(1:(length(hypo_matrices)*(m+1)),function(x) mean(per_unlist[x,]>stat_Erg_unlist[x]))
-    pvalue_per <- matrix(pvalue_per ,length(hypo_matrices),byrow = TRUE)
-    pvalue_per <- matrix(unlist(pvalue_per),length(hypo_matrices),(m+1),dimnames = list(fac_names, weight_names))
-    df <- sapply(1:length(hypo_matrices),function(x)rank_C[x]*m)
 
   }
   else {
@@ -177,11 +150,13 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999, alpha
         dat_tmp$exit[ind_tau] <- tau
         data1[[k]] <- dat_tmp
       }
+    tau <- max(data1[[i]][data1[[i]]$to ==1,]$exit)
+    print(tau)
 
-    hypo_matrices[[1]] <- t(hypo_matrices[[1]]) %*% ginv(hypo_matrices[[1]] %*% t(hypo_matrices[[1]])) %*% hypo_matrices[[1]]
+
 
       testcp <- test.data(data1, n, BSiter = BSiter, alpha = alpha,
-                      Gewichte = weights, c.matrix = hypo_matrices[[1]])
+                      Gewichte = weights, c.matrix = hypo_matrices)
   }
   # output <- list()
   # output$input <- input_list
