@@ -46,3 +46,22 @@ summary.medsanova <- function (x, ...) {
 }
 
 
+
+#' @export
+print.copsanova <- function(x, ...) {
+  cat("Call:", "\n")
+  print(x$input$formula)
+
+  cat("\n", "Wildbootstrap multiplier:",x$weights, "\n")
+
+  cat("\n", "copSANOVA: concordance probability SANOVA:","\n","\n", sep = "")
+  print(x$statistic)
+}
+
+#' @export
+summary.copsanova <- function (x, ...) {
+  print(x)
+}
+
+
+

@@ -2,12 +2,11 @@
 #FIXME: output festlegen- besprechung
 #FIXME: tau -optionen -besprechung
 
-copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999, alpha = 0.05,
+copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
                       weights = "pois",
                      nested.levels.unique = FALSE){
   input_list <- list(formula = formula,time = time, data = data, BSiter = BSiter,
-                     weights = weights,
-                     alpha = alpha)
+                     weights = weights)
   #Zeit und in Formel einbinden
   formula2 <-  paste0(formula,"*",event)
   dat <- model.frame(formula2, data)
@@ -36,22 +35,33 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999, alpha
   }
   lev_names <- expand.grid(levels)
   if (nf == 1) {
-    dat2 <- dat2[order(dat2[, 2]), ]
-    response <- dat2[, 1]
-    nr_hypo <- attr(terms(formula), "factors")
-    fac_names <- colnames(nr_hypo)
-    n <- plyr::ddply(dat2, nadat2, plyr::summarise, Measure = length(subject),
-                     .drop = F)$Measure
-    hypo_matrices <- list(diag(fl) - matrix(1/fl, ncol = fl, nrow = fl))
-    group <- rep(1:length(n),n)
-    dat2$group <- group
-
     ###############################
-    dat2  <- dat2[order(dat2["time"]),]
     event <- dat2[,"event"]
     group <- dat2$group
+    diff_groups <- length(unique(group))
 
-    results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
+    dat2$exit <- dat2$time
+    dat2$to <- dat2$event
+    data1 <- list()
+    tau <- 2173
+
+
+    n <- numeric(0)
+    for( k in 1:diff_groups){
+      dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
+      n <- c(n,length(dat_tmp$to))
+
+      ind_tau <- dat_tmp$exit >= tau
+
+      dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
+      dat_tmp$exit[ind_tau] <- tau
+      data1[[k]] <- dat_tmp
+    }
+    tau <- max(data1[[i]][data1[[i]]$to ==1,]$exit)
+
+    copsanova_erg <- test.data(data1, n, BSiter = BSiter,
+                               Gewichte = weights, c.matrix = hypo_matrices)
+
 
 
   }
@@ -151,37 +161,36 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999, alpha
         data1[[k]] <- dat_tmp
       }
     tau <- max(data1[[i]][data1[[i]]$to ==1,]$exit)
-    print(tau)
 
-
-
-      testcp <- test.data(data1, n, BSiter = BSiter, alpha = alpha,
+      copsanova_erg <- test.data(data1, n, BSiter = BSiter,
                       Gewichte = weights, c.matrix = hypo_matrices)
+
+
   }
-  # output <- list()
-  # output$input <- input_list
-  # output$pvalues_stat  <- pvalue_stat
-  # output$pvalues_per <-  pvalue_per
-  # output$cross <- cross
-  # output$indep <- indep
-  # output$rg <- rg
-  # output$nperm <-nperm
-  #
-  # output$statistic <- cbind(Stat_Erg[,1],df,pvalue_stat[,1],round(pvalue_per[,1],4))
-  # rownames(output$statistic) <- fac_names
-  # colnames(output$statistic) <- c("Test statistic","df","p-value", "p-value perm")
-  #
-  #
-  # class(output) <- "casanova"
-  # return(output)
- return(testcp)
+  output <- list()
+  output$input <- input_list
+  output$pvalues <-  copsanova_erg$value
+  output$bsiter <- BSiter
+  output$weights <- weights
+
+  output$statistic <- cbind(copsanova_erg$value,round(copsanova_erg$value,4))
+  rownames(output$statistic) <- fac_names
+  colnames(output$statistic) <- c("Test statistic","p-value")
+
+
+  class(output) <- "copsanova"
+  return(output)
+
 
 }
 set.seed(1)
-datatest1 <- copsanova("exit ~ sex*treat", "to", data = data, BSiter = 99, alpha = 0.05,
-                       weights = "pois",
-          nested.levels.unique = FALSE)
+datatest1  <- copsanova("exit ~ sex*treat", "to", data = data, BSiter = 9,
+                       weights = "pois", nested.levels.unique = FALSE)
 
+
+
+copsanova("exit ~ sex*treat", "to", data = data)
+data
 sort(datatest1[[2]][[6]]$exit)
 sort(data1[[1]]$exit)
 data[[1]][]
