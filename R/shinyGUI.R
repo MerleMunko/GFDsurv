@@ -32,6 +32,13 @@ GFDsurvGUI <- function() {
 
                           ),
 
+                          tags$head(tags$style(HTML("
+                              .shiny-split-layout > div {
+                                overflow: visible;
+                              }
+                              "))), #for selectinput in splitlayout with full dropdown view
+
+
                           selectInput("Method", "Select Testing Method:",
                                       c("CASANOVA: Cumulative Aalen survival analyis-of-variance" = "casanova",
                                         "medSANOVA: Median survival analyis-of-variance"= "medSANOVA",
@@ -77,14 +84,32 @@ GFDsurvGUI <- function() {
 
                           splitLayout(
 
-                            numericInput("nperm", "nperm", value = 1999),
+                            numericInput("nperm", "number of permutations", value = 1999)
 
-                            numericInput("alpha", "Alpha", value = 0.05, min = 0, max = 1)
+                          ),
 
+                          splitLayout(
+                            numericInput("nboot", "number of bootstraps iterations", value = 99),
+
+                            selectInput("bootstrapweights", "Select wildbootstrap weights:",
+                                        c("pois" = "pois",
+                                          "norm"= "norm",
+                                          "weird"="weird",
+                                          "corrLibPois"= "corrLibPois",
+                                          "corrLibNorm" = "corrLibNorm",
+                                          "corrLibWeird" = "corrLibWeird"
+                                        ))
+                          ),
+
+                          splitLayout(
+                            numericInput("tau", "Choose Tau",NULL),
+                            actionButton("tau_suggest", "Suggest a tau", class = "btn-primary")
                           ),
 
                           actionButton("process", "Calculate", class = "btn-primary")
                         ),
+
+
 
 
                         mainPanel(
@@ -143,6 +168,26 @@ GFDsurvGUI <- function() {
 
 
            }
+           if (input$Method != "copSANOVA") {
+             # data  <- as.data.frame(datasetInput())
+             shinyjs::hide("bootstrapweights")
+             shinyjs::hide("nboot")
+             shinyjs::hide("tau")
+             shinyjs::hide("tau_suggest")
+             shinyjs::show("nperm")
+
+           }
+           if (input$Method == "copSANOVA") {
+             # data  <- as.data.frame(datasetInput())
+             shinyjs::show("bootstrapweights")
+             shinyjs::show("nboot")
+             shinyjs::show("tau")
+             shinyjs::show("tau_suggest")
+             shinyjs::hide("nperm")
+
+
+
+           }
 
 
 
@@ -156,7 +201,7 @@ GFDsurvGUI <- function() {
 
            # This input exists if the `static`
            # one is equal to `A` only
-           if (input$Method == "casanova" || input$Method == "medSANOVA") {
+           if (input$Method == "casanova" || input$Method == "medSANOVA"|| input$Method == "copSANOVA") {
              selectInput(inputId = 'dynamic',
                          label = "Name of event",
                          choices = colnames(datasetInput()))
@@ -168,13 +213,27 @@ GFDsurvGUI <- function() {
 
          ## this bit fixes the issue
          observe({
-           if (input$Method == "casanova" || input$Method == "medSANOVA") {
+           if (input$Method == "casanova" || input$Method == "medSANOVA"|| input$Method == "copSANOVA") {
              values$dyn <- input$dynamic
            } else {
              values$dyn <- NULL
            }
          })
 
+
+         observeEvent(input$tau_suggest, {
+           if (input$formula == "~ + ") {
+
+             output$result <- renderPrint({
+               "'formula' missing or invalid"
+             })
+           }
+           updateNumericInput(session, "tau", value = copsanova_tau(formula= isolate(input$formula),
+                                                                    event = input$dynamic,
+                                                                    data = isolate(data)))
+
+         }
+         )
 
 
 
@@ -214,6 +273,21 @@ GFDsurvGUI <- function() {
                          nested.levels.unique = FALSE
                          )
               })
+            }
+            if (input$Method == "copSANOVA" ){
+              data <- as.data.frame(datasetInput())
+              output$result <- renderPrint({
+                copsanova(formula= isolate(input$formula),
+                          event = input$dynamic,
+                          data = isolate(data),
+                          BSiter = isolate(input$nboot),
+                          weights = isolate(input$bootstrapweights),
+                          tau = isolate(input$tau),
+                          nested.levels.unique = FALSE
+                )
+              })
+
+
             }
 
           }

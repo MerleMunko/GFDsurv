@@ -278,7 +278,7 @@ DDMB.quant.discrete <- function(at.risk, n, ntime, times, BSiter, Gewichte, delt
 
 #copSANOVA: concordance probability SANOVA
 ####5.Schritt: Konfidenzintervalle
-test.data <- function(data, n, BSiter, alpha, Gewichte, c.matrix){
+test.data <- function(data, n, BSiter, Gewichte, c.matrix){
   #Input:
   # 0. data ist eine Liste von data.frames mit ueblichem Format:
   #     $exit fuer die Ereignis-/Zensierzeit
@@ -294,7 +294,6 @@ test.data <- function(data, n, BSiter, alpha, Gewichte, c.matrix){
   }
 
   T.matrix <- lapply(c.matrix, C_mat)
-  print(T.matrix)
 
 
   no.groups <- length(n)
@@ -347,11 +346,9 @@ test.data <- function(data, n, BSiter, alpha, Gewichte, c.matrix){
     # p = E w   im Papier
     p.vec <- 1 / no.groups * (diag(rep(1, no.groups)) %x% t(rep(1, no.groups))) %*%  c(t(p.matrix))
 
-    print(p.vec)
 
     temp <- cov.matrix(n, times, KME, at.risk, oneMinusDeltaA, NULL, NULL, NULL)
     V <- temp$V
-    print(T.matrix)
 
     FNT_mat <- function(x){
       c(sum(n) * t(p.vec) %*% x %*% p.vec / tr(x %*% V))
@@ -372,17 +369,13 @@ test.data <- function(data, n, BSiter, alpha, Gewichte, c.matrix){
     DDMB.teststats <- lapply(T.matrix, DDMB.quant.discrete_mat)
     #q.alpha.discrete <- quantile(DDMB.teststats, probs = 1-alpha)
 
-    print(DDMB.teststats)
-    #print(FNT)
-    #print(BSiter)
+    erg <- c()
 
+    for(i in 1:length(DDMB.teststats)){
+      erg[i] <- sum(c(DDMB.teststats[[i]], FNT[[i]]) >= FNT[[i]]) / (BSiter+1)
+    }
 
-    sum_mat <- function(x,y){
-      sum(c(x, y) >= y) / (BSiter+1)
-      }
-    sum(c(DDMB.teststats, FNT) >= FNT) / (BSiter+1)
-    # ifelse(FNT > q.alpha.discrete, 1, 0)
-    #, FNT = FNT, DDMB.teststats = DDMB.teststats)
+    return(list("value" = erg,"test_statistics" = unlist(FNT)))
 
   }
 }

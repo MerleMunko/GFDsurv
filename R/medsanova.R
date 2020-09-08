@@ -253,12 +253,11 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
    return(output)
 
 }
-
-medsanova(formula= "eventT ~ treat*prot_groups", event ="dc",
-          data = data, nperm = 10, alpha = 0.5,var_level = 0.95,
-          var_method= "onesided",nested.levels.unique = FALSE)
-
-
-
-data <- read.csv("C:/Users/stein/Desktop/Quatsch/Testdaten.csv")
-data
+#
+# medsanova(formula= "eventT ~ treat*prot_groups", event ="dc",
+#           data = data, nperm = 10, alpha = 0.5,var_level = 0.95,
+#           var_method= "onesided",nested.levels.unique = FALSE)
+#
+#
+#
+# data <- read.csv("C:/Users/stein/Desktop/Quatsch/Testdaten.csv")
