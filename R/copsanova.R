@@ -1,10 +1,14 @@
-#' CASANOVA: Cumulative Aalen survival analyis-of-variance
+#' copSANOVA: concordance parameter survival analyis-of-variance
 #'
-#' The function \code{casanova} calculates the Wald-type statistic based on the
-#' combination of differently weighted Nelson-Aalen-type integrals. Respective p-values
-#' are obtained by a \eqn{\chi^2}-approximation and a permutation approach, respectively.
-#' @param formula A model \code{formula} object. The left hand side contains the time variable and the right
-#'  hand side contains the factor variables of interest. An interaction term must be
+#' The function \code{copanova} calculates the ANOVA-rank-type statistic for general
+#' factorial
+#' survival designs based on the (extended) concordance parameter. The respective
+#'p-value is
+#' obtained by a multiplier bootstrap approach.
+#' @param formula A model \code{formula} object. The left hand side contains the
+#' time variable
+#' and the right hand side contains the factor variables of interest. An interaction
+#' term must be
 #'  specified.
 #' @param event The name of censoring status indicator with values 0=censored and
 #' 1=uncensored.
@@ -12,49 +16,44 @@
 #' @param data A data.frame, list or environment containing the variables in formula
 #' and the censoring status
 #' indicator. Default option is \code{NULL}.
-#' @param cross logical. Should the crossing weight w(x) = 1 - 2x be included?
-#'  The default is \code{TRUE}.
-#' @param rg A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the
-#' weights
-#'   \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
-#'  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.
-#' @param nperm The number of permutations used for calculating the permuted p-value.
-#'   The default option is 1999.
-#' @param alpha A number specifying the significance level; the default is 0.05.
+#' @param Bsiter The number of bootstrap iterations; the default is 1999.
+#' @param weights Character to specify the multiplier bootstrap approach. Either a
+#' wild bootstrap
+#' with centred Poisson ("pois", default) or standard normal ("norm") weights, or the
+#' weird bootstrap ("weird") can be chosen. Moreover, both wild bootstrap strategies
+#' can be selected
+#' with a correcting factor for liberality by "corrLibPois" and "corrLibNorm".
+#' @param tau The truncation time specifying the end of the relevant time window for
+#' the analysis.
+#' By default(\code{NULL}), the smallest out of the largest possible censoring times
+#' per group is chosen.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested
 #' factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each
 #'  level of the main factor.
 #' @details
-#' The \code{casanova} function calculates the Wald-type statistic of weighted
-#' Nelson-Aalen type integrals
-#' for general factorial survival designs. Crossed as well as hierachically nested designs are
-#' implemented. Moreover, the approach allows the combination of
-#' different weights into a
-#' joint statistic. The user can choose between weights of the following form:
-#' w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
-#' r,g (including 0). The function automatically check whether the specified weights
-#' fulfill the linear independence assumption and choose a subset of linearly independent
-#' weights if the original weights violate the aforemention assumption.
+#' The \code{copsanova} function calculates the ANOVA-rank-type statistic for
+#' general factorial
+#' survival designs based on the (extended) concordance parameter. Crossed as well as
+#' hierachically nested designs are implemented. The p-value is determined by a
+#' multiplier bootstrap
+#' approach. Here, a wild bootstrap with/without correcting factors for liberal
+#' tests or the weird
+#' bootstrap of Andersen et al. (1993) can be chosen. The concrete analysis is done
+#' on the time window
+#' [0,tau], where tau need to be chosen equal to (default) or smaller than the
+#' smallest out of
+#' the largest possible censoring times per group.
 #'
-#'   The \code{casanova} function returns the test statistic as well as two
-#'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
-#'   the second one is based on a permutation procedure.
+#'   The \code{copsanova} function returns the test statistic as well as a
+#'   corresponding p-value based on a the specified multiplier procedure.
 #'
-#'  @return A \code{casanova} object containing the following components:
-#'  \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
-#'  \item{pvalues_per}{The p-values of the permutation approach}
-#'  \item{statistics}{The value of the casanova along with degrees of freedom of the
-#'  central chi-square distribution and p-value, as well as the p-value of the
-#'   permutation procedure.}
-#'  \item{rg}{A list containg the exponents of the direction considered in the
-#'  statistical analysis
-#'  \item{cross}{logical. Was the crossing direction considered in the statistical
-#'  analysis}
-#'  \item{indep}{logical. Were the directions specified by the user linearly
-#'  independent?}
-#'  \item{nperm}{The number of permutations used for calculating the permuted p-value.
-#' @examples
+#'  @return A \code{copsanova} object containing the following components:
+#'  \item{statistics}{The value of the copsanova along with the p-value
+#'  of the specified multiplier bootstrap.}
+#'  \item{Bsiter}{The number of bootstrap iterations.}
+#'  \item{weights}{The chosen multiplier bootstra method.}
+#' @examples MACHT PHILIPP
 #' library("survival")
 #' data(veteran)
 #' out <- casanova(formula ="time ~ trt*celltype",event = "status",
@@ -64,14 +63,18 @@
 #' summary(out)
 #'
 #' @references
-#'
+#' Andersen, P.K., Borgan, Ø., Gill, R.D. and Keiding, N. (1993). Statistical ModelsBased
+#' on Counting Processes. New York: Springer.
+#' Ditzhaus, M., Dobler, D. and Pauly, M. (2020). Inferring median survival
+#' differences in
+#' general factorial designs via permutation tests. (arxiv:2006.14316).
 #'
 #' @export
 #'
 
 copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
-                      weights = "pois",
-                     nested.levels.unique = FALSE, tau = NULL){
+                      weights = "pois", tau = NULL,
+                     nested.levels.unique = FALSE){
   input_list <- list(formula = formula,time = time, data = data, BSiter = BSiter,
                      weights = weights)
   #Zeit und in Formel einbinden
@@ -272,8 +275,6 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
   }
   output <- list()
   output$input <- input_list
-  output$pvalues <-  copsanova_erg$value
-  output$test_statistics <-  copsanova_erg$test_statistics
   output$bsiter <- BSiter
   output$weights <- weights
 

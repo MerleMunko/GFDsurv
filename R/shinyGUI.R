@@ -103,7 +103,7 @@ GFDsurvGUI <- function() {
 
                           splitLayout(
                             numericInput("tau", "Choose Tau",NULL),
-                            actionButton("tau_suggest", "Suggest a tau", class = "btn-primary")
+                            actionButton("tau_suggest", "Calculate automaticly tau", class = "btn-primary")
                           ),
 
                           actionButton("process", "Calculate", class = "btn-primary")
