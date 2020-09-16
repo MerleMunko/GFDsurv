@@ -179,8 +179,3 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
 
 
 }
-set.seed(1)
-copsanova_tau("exit ~ sex*treat", "to", data = data)
-
-
-

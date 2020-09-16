@@ -54,13 +54,7 @@
 #'  \item{Bsiter}{The number of bootstrap iterations.}
 #'  \item{weights}{The chosen multiplier bootstra method.}
 #' @examples MACHT PHILIPP
-#' library("survival")
-#' data(veteran)
-#' out <- casanova(formula ="time ~ trt*celltype",event = "status",
-#'  data = veteran)
-#'
-#' ## Detailed informations:
-#' summary(out)
+#' TO DO
 #'
 #' @references
 #' Andersen, P.K., Borgan, Ø., Gill, R.D. and Keiding, N. (1993). Statistical ModelsBased
@@ -69,6 +63,7 @@
 #' differences in
 #' general factorial designs via permutation tests. (arxiv:2006.14316).
 #'
+#' @importFrom MASS
 #' @export
 #'
 

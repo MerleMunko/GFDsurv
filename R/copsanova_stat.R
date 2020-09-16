@@ -1,7 +1,3 @@
-
-
-library(MASS)
-
 tr <- function(A){
   sum(diag(A))
 }

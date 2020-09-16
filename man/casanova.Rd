@@ -47,8 +47,9 @@ weights
  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.}
 }
 \description{
-The function \code{casanova} calculates the p-values of the multiple-direction logrank test based
-on the \eqn{\chi^2}-approximation and the permutation approach.
+The function \code{casanova} calculates the Wald-type statistic based on the
+combination of differently weighted Nelson-Aalen-type integrals. Respective p-values
+are obtained by a \eqn{\chi^2}-approximation and a permutation approach, respectively.
 }
 \details{
 
@@ -65,5 +66,5 @@ summary(out)
 }
 \references{
 Ditzhaus, M., Janssen, A. and Pauly, M. (2020). Permutation inference in factorial survival designs with the
-          CASANOVA. arXiv preprint (arXiv:2004.10818).
+          CASANOVA. ArXiv preprint (arXiv:2004.10818).
 }
