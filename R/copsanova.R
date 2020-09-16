@@ -63,7 +63,7 @@
 #' differences in
 #' general factorial designs via permutation tests. (arxiv:2006.14316).
 #'
-#' @importFrom MASS
+#'
 #' @export
 #'
 
