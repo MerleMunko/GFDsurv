@@ -34,7 +34,7 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
     diff_groups <- length(unique(group))
 
     dat2$exit <- dat2$time
-    dat2$to <- dat2$event
+    dat2$to <- ifelse(dat2$event == 1,"cens",1)
     data1 <- list()
 
     n <- numeric(0)
@@ -43,7 +43,7 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
       dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
       n <- c(n,length(dat_tmp$to))
 
-      tau_all <- c(tau_all,max(dat_tmp[dat_tmp$to ==1,]$exit))
+      tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to ==1,]$exit,0.95))
       # ind_tau <- dat_tmp$exit >= tau
       #
       # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
@@ -142,7 +142,7 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
     diff_groups <- length(unique(group))
 
     dat2$exit <- dat2$time
-    dat2$to <- dat2$event
+    dat2$to <- ifelse(dat2$event == 1,"cens",1)
     data1 <- list()
 
 
@@ -152,7 +152,7 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
       dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
       n <- c(n,length(dat_tmp$to))
 
-      tau_all <- c(tau_all,max(dat_tmp[dat_tmp$to ==1,]$exit))
+      tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to ==1,]$exit,0.95))
       # ind_tau <- dat_tmp$exit >= tau
       #
       # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.

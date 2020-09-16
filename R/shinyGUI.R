@@ -7,10 +7,14 @@
 
 GFDsurvGUI <- function() {
   requireNamespace("shiny", quietly = TRUE)
+
   if (!("package:shiny" %in% search())) {
     attachNamespace("shiny")
   }
-
+  requireNamespace("shinyWidgets", quietly = TRUE)
+  if (!("package:shinyWidgets" %in% search())) {
+    attachNamespace("shinyWidgets")
+  }
 
 
       ui <- fluidPage(theme = shinythemes::shinytheme("cerulean"),
@@ -37,76 +41,111 @@ GFDsurvGUI <- function() {
                                 overflow: visible;
                               }
                               "))), #for selectinput in splitlayout with full dropdown view
+                          tags$style(HTML("
+                                 input[type=number] {
+                                                              -moz-appearance:textfield;
+                                                    }
+                                  input[type=number]::{
+                                                  -moz-appearance:textfield;
+                                                    }
+                        input[type=number]::-webkit-outer-spin-button,
+                        input[type=number]::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                        }
+                        ")),
 
+                        h3(id="titleLoadData","Load dataset first!", style = "color:red"),
 
+                        shinyjs::hidden(
                           selectInput("Method", "Select Testing Method:",
                                       c("CASANOVA: Cumulative Aalen survival analyis-of-variance" = "casanova",
                                         "medSANOVA: Median survival analyis-of-variance"= "medSANOVA",
-                                        "copSANOVA: concordance probability SANOVA"="copSANOVA")),
+                                        "copSANOVA: concordance probability SANOVA"="copSANOVA"))
+                        ),
+
 
                           splitLayout(
-
                             uiOutput(outputId = 'dynamicInput'),
-
-
-                            textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
-
+                            shinyjs::hidden(
+                             textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
+                            )
                           ),
 
-                          splitLayout(cellWidths = c("20%","60%","20%"),
-
+                          splitLayout(cellWidths = c("20%","50%","20%"),
+                                      shinyjs::hidden(
                             checkboxGroupInput("Weights", "Choose weights:",selected = c("crossing","proportional"),
                                       choiceNames = list("Crossing", "Proportional"),
-                                      choiceValues = list("crossing", "proportional")),
+                                      choiceValues = list("crossing", "proportional"))
+                                      ),
 
-
-                            selectInput("weights1","User specifeid directions of form w(x) = x^r(1-x)^g",
-                                        paste0("r = ",expand.grid(1:10,1:10)[,1],
-                                               ", g = ",expand.grid(1:10,1:10)[,2]),
+                            shinyjs::hidden(
+                            selectInput("weights1","User specifeid directions of form w(x) = x^r(1-x)^g with (r,g)",
+                                        paste0("(",expand.grid(1:10,1:10)[,1],",",expand.grid(1:10,1:10)[,2],")"),
                                         multiple=TRUE,selectize = TRUE)
-
+                            )
 
                           ),
 
 
                           splitLayout(cellWidths = c("30%","70%"),
-
+                                      shinyjs::hidden(
                             radioButtons("variante", "Variance estimation based on",
                                        c("one.sided"= "onesided",
-                                         "two.sided" = "twosided"), inline = TRUE),
-
+                                         "two.sided" = "twosided"), inline = TRUE)
+                                      ),
+                                  shinyjs::hidden(
                             numericInput("var_level", "confidence intervalle with level",
                                                    min = 0, max = 1,
                                                    value = 0.05, width = "20%")
+                                  )
                           ),
 
 
 
                           splitLayout(
-
+                            shinyjs::hidden(
                             numericInput("nperm", "number of permutations", value = 1999)
+                            )
+                          ),
+
+                          splitLayout(cellWidths = c("20%","20%","30%"),
+                                      shinyjs::hidden(
+                            sliderTextInput(
+                              inputId = "sliderBoot",
+                              label = "bootstrap type:",
+                              choices = c("wild","weird"),
+                              selected = "wild")
+                                      ),
+                            shinyjs::hidden(
+                            selectInput("methodBoot", "distrubution:",
+                                        c("Poisson"="pois","Normal"="norm"))
+                            ),
+                            shinyjs::hidden(
+                            checkboxInput("correction", "correction for liberal test", TRUE)
+                            )
 
                           ),
 
-                          splitLayout(
-                            numericInput("nboot", "number of bootstraps iterations", value = 99),
-
-                            selectInput("bootstrapweights", "Select wildbootstrap weights:",
-                                        c("pois" = "pois",
-                                          "norm"= "norm",
-                                          "weird"="weird",
-                                          "corrLibPois"= "corrLibPois",
-                                          "corrLibNorm" = "corrLibNorm",
-                                          "corrLibWeird" = "corrLibWeird"
-                                        ))
+                          splitLayout(cellWidths = c("15%","85%"),
+                                      shinyjs::hidden(
+                          numericInput("nboot", "number of bootstraps iterations", value = 99)
+                                      )
                           ),
 
+
+
                           splitLayout(
-                            numericInput("tau", "Choose Tau",NULL),
+                            shinyjs::hidden(
+                            numericInput("tau", "Choose Tau",NULL)
+                            ),
+                            shinyjs::hidden(
                             actionButton("tau_suggest", "Calculate automaticly tau", class = "btn-primary")
-                          ),
-
+                            )
+                            ),
+                        shinyjs::hidden(
                           actionButton("process", "Calculate", class = "btn-primary")
+                        )
                         ),
 
 
@@ -133,66 +172,123 @@ GFDsurvGUI <- function() {
            read.csv(input$infile$datapath, header = input$header, sep = as.character(input$sep))
          })
 
-         observeEvent(input$Method, {
 
-           if (input$Method != "casanova") {
-             # data  <- as.data.frame(datasetInput())
+         observeEvent(input$infile, {
 
-             shinyjs::hide("Weights")
-             shinyjs::hide("weights1")
+           if(is.null(input$infile)){
+             shinyjs::hide(id = "Method")
+             shinyjs::hide(id = "weights1")
+             shinyjs::hide(id = "Weights")
+             shinyjs::hide(id = "formula")
+             shinyjs::hide(id = "variante")
+             shinyjs::hide(id = "var_level")
+             shinyjs::hide(id = "nperm")
+             shinyjs::hide(id = "sliderBoot")
+             shinyjs::hide(id = "methodBoot")
+             shinyjs::hide(id = "correction")
+             shinyjs::hide(id = "nboot")
+             shinyjs::hide(id = "tau")
+             shinyjs::hide(id = "tau_suggest")
+             shinyjs::hide(id = "process")
+
+           }else{
+             shinyjs::show(id = "Method")
+             shinyjs::show(id = "formula")
+             shinyjs::show(id = "process")
+             shinyjs::hide(id = "titleLoadData")
+
+
+             observeEvent(input$Method, {
+
+               if (input$Method != "casanova") {
+
+                 shinyjs::hide("Weights")
+                 shinyjs::hide("weights1")
+
+               }
+
+
+               if (input$Method == "casanova") {
+
+                 shinyjs::show("Weights")
+                 shinyjs::show("weights1")
+
+               }
+
+
+               if (input$Method != "medSANOVA") {
+
+                 shinyjs::hide("variante")
+                 shinyjs::hide("var_level")
+
+               }
+
+               if (input$Method == "medSANOVA") {
+
+                 shinyjs::show("variante")
+                 shinyjs::show("var_level")
+
+               }
+
+               if (input$Method != "copSANOVA") {
+                 # data  <- as.data.frame(datasetInput())
+                 shinyjs::hide("methodBoot")
+                 shinyjs::hide("nboot")
+                 shinyjs::hide("sliderBoot")
+                 shinyjs::hide("correction")
+                 shinyjs::hide("tau")
+                 shinyjs::hide("tau_suggest")
+                 shinyjs::show("nperm")
+
+               }
+               if (input$Method == "copSANOVA") {
+                 # data  <- as.data.frame(datasetInput())
+                 shinyjs::show("methodBoot")
+                 shinyjs::show("nboot")
+                 shinyjs::show("sliderBoot")
+                 shinyjs::show("correction")
+                 shinyjs::show("tau")
+                 shinyjs::show("tau_suggest")
+                 shinyjs::hide("nperm")
+
+               }
+
+
+
+
+             })## observeevent
+
+
+
+
+             observeEvent(input$sliderBoot, {
+
+               if (input$sliderBoot != "weird" && input$Method == "copSANOVA") {
+                 # data  <- as.data.frame(datasetInput())
+                 shinyjs::show("methodBoot")
+
+               }
+               if (input$sliderBoot == "weird") {
+                 # data  <- as.data.frame(datasetInput())
+                 shinyjs::hide("methodBoot")
+
+               }
+
+
+             })
 
            }
-
-
-           if (input$Method == "casanova") {
-             # data  <- as.data.frame(datasetInput())
-
-             shinyjs::show("Weights")
-             shinyjs::show("weights1")
-
-
-
-           }
-
-
-           if (input$Method != "medSANOVA") {
-             # data  <- as.data.frame(datasetInput())
-             shinyjs::hide("variante")
-             shinyjs::hide("var_level")
-
-           }
-           if (input$Method == "medSANOVA") {
-             # data  <- as.data.frame(datasetInput())
-             shinyjs::show("variante")
-             shinyjs::show("var_level")
-
-
-           }
-           if (input$Method != "copSANOVA") {
-             # data  <- as.data.frame(datasetInput())
-             shinyjs::hide("bootstrapweights")
-             shinyjs::hide("nboot")
-             shinyjs::hide("tau")
-             shinyjs::hide("tau_suggest")
-             shinyjs::show("nperm")
-
-           }
-           if (input$Method == "copSANOVA") {
-             # data  <- as.data.frame(datasetInput())
-             shinyjs::show("bootstrapweights")
-             shinyjs::show("nboot")
-             shinyjs::show("tau")
-             shinyjs::show("tau_suggest")
-             shinyjs::hide("nperm")
-
-
-
-           }
+         })
 
 
 
 
-          })## observeevent
+
+
+
+
+
+
 
 
          values <- reactiveValues()
@@ -221,6 +317,10 @@ GFDsurvGUI <- function() {
          })
 
 
+
+
+
+
          observeEvent(input$tau_suggest, {
            if (input$formula == "~ + ") {
 
@@ -228,6 +328,7 @@ GFDsurvGUI <- function() {
                "'formula' missing or invalid"
              })
            }
+           data <- as.data.frame(datasetInput())
            updateNumericInput(session, "tau", value = copsanova_tau(formula= isolate(input$formula),
                                                                     event = input$dynamic,
                                                                     data = isolate(data)))
@@ -247,17 +348,42 @@ GFDsurvGUI <- function() {
             })
 
           } else {
+
             if (input$Method == "casanova" ){
             data <- as.data.frame(datasetInput())
+
+            rg <- list()
+            givenWeights <- isolate(input$Weights)
+            if("proportional" %in% givenWeights){
+              rg[[length(rg)+1]] <- c(0,0)
+            }
+            if("crossing" %in% givenWeights){
+              crossing <- TRUE
+            } else {
+              crossing <- FALSE
+            }
+
+            inputWeights <- isolate(input$weights1)
+
+            if(is.null(inputWeights)){}else{
+              expand.grid(1:10,1:10)
+              kombiAll <- paste0("(",expand.grid(1:10,1:10)[,1],",",expand.grid(1:10,1:10)[,2],")")
+              kombi <- expand.grid(1:10,1:10)[which(kombiAll %in% inputWeights),]
+
+              for (i in 1:(dim(kombi)[1])){
+                rg[[length(rg)+1]] <- as.numeric(kombi[i,])
+              }
+            }
+
             output$result <- renderPrint({
               casanova(formula= isolate(input$formula),
                        event = input$dynamic,
                        data = isolate(data),
                        nperm = isolate(input$nperm),
                        alpha = isolate(input$alpha),
-                       cross = isolate(input$crossing),
+                       cross = crossing,
                        nested.levels.unique = FALSE,
-                       rg = list(c(0,0)))
+                       rg = isolate(rg))
             })
             }
 
@@ -276,12 +402,38 @@ GFDsurvGUI <- function() {
             }
             if (input$Method == "copSANOVA" ){
               data <- as.data.frame(datasetInput())
+              bootstrapMethod <- isolate(input$sliderBoot)
+              bootstrapDis <- isolate(input$methodBoot)
+              correction <- isolate(input$correction)
+             if(bootstrapMethod == "wild"){
+               if(bootstrapDis =="pois"){
+                 if(correction == TRUE){
+                   weights <- "corrLibPois"
+                 } else {
+                   weights <- "pois"
+                 }
+               } else {
+                 if(correction == TRUE){
+                  weights <- "corrLibNorm"
+                }else{
+                  weights <- "norm"
+               }
+               }
+             } else {
+               if(correction == TRUE){
+                 weights <- "corrLibWeird"
+               }else{
+                 weights <- "weird"
+               }
+
+             }
+
               output$result <- renderPrint({
                 copsanova(formula= isolate(input$formula),
                           event = input$dynamic,
                           data = isolate(data),
                           BSiter = isolate(input$nboot),
-                          weights = isolate(input$bootstrapweights),
+                          weights = weights,
                           tau = isolate(input$tau),
                           nested.levels.unique = FALSE
                 )
@@ -301,3 +453,4 @@ GFDsurvGUI <- function() {
     shinyApp(ui = ui, server = server)
 
 }
+

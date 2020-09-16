@@ -25,8 +25,8 @@
 #' with a correcting factor for liberality by "corrLibPois" and "corrLibNorm".
 #' @param tau The truncation time specifying the end of the relevant time window for
 #' the analysis.
-#' By default(\code{NULL}), the smallest out of the largest possible censoring times
-#' per group is chosen.
+#' By default(\code{NULL}), the smallest 95%-quantile of the times per group is
+#' chosen.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested
 #' factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each
@@ -122,8 +122,8 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
     diff_groups <- length(unique(group))
 
     dat2$exit <- dat2$time
-    dat2$to <- dat2$event
-    data1 <- list()
+    dat2$to <- ifelse(dat2$event == 1,"cens",1)
+        data1 <- list()
 
     print(dat2)
     n <- numeric(0)
@@ -132,7 +132,7 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
       dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
       n <- c(n,length(dat_tmp$to))
 
-      tau_all <- c(tau_all,max(dat_tmp[dat_tmp$to ==1,]$exit))
+      tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to ==1,]$exit,0.95))
       # ind_tau <- dat_tmp$exit >= tau
       #
       # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
@@ -237,7 +237,7 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
     diff_groups <- length(unique(group))
 
     dat2$exit <- dat2$time
-    dat2$to <- dat2$event
+    dat2$to <- ifelse(dat2$event == 1,"cens",1)
     data1 <- list()
 
 
@@ -247,7 +247,7 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
         dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
         n <- c(n,length(dat_tmp$to))
 
-        tau_all <- c(tau_all,max(dat_tmp[dat_tmp$to ==1,]$exit))
+        tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to =="cens",]$exit,0.95))
         # ind_tau <- dat_tmp$exit >= tau
         #
         # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
@@ -288,9 +288,9 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
 
 
 }
-# set.seed(1)
-# copsanova("exit ~ sex", "to", data = data, BSiter = 9,
-#                        weights = "pois", nested.levels.unique = FALSE)
 
+# set.seed(1)
+#  copsanova("exit ~ treat*sex", "to", data = data, BSiter = 9,
+#                         weights = "pois", nested.levels.unique = FALSE)
 
 
