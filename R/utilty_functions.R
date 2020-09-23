@@ -53,6 +53,8 @@ print.copsanova <- function(x, ...) {
   print(x$input$formula)
   cat("\n", "multiplier bootstrap:",x$weights, "\n")
 
+  cat("\n", "time window for analysis: [0,",paste0(x$tau,"]"), "\n")
+
   cat("\n", "copSANOVA: concordance probability SANOVA:","\n","\n", sep = "")
   print(x$statistic)
 }
