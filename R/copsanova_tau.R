@@ -29,6 +29,20 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
   }
   lev_names <- expand.grid(levels)
   if (nf == 1) {
+
+    dat2 <- dat2[order(dat2[, 2]), ]
+    response <- dat2[, 1]
+    nr_hypo <- attr(terms(formula), "factors")
+    fac_names <- colnames(nr_hypo)
+    n <- plyr::ddply(dat2, nadat2, plyr::summarise, Measure = length(subject),
+                     .drop = F)$Measure
+    hypo_matrices <- list(diag(fl) - matrix(1/fl, ncol = fl, nrow = fl))
+    group <- rep(1:length(n),n)
+    dat2$group <- group
+
+
+    #####
+
     event <- dat2[,"event"]
     group <- dat2$group
     diff_groups <- length(unique(group))
@@ -43,7 +57,7 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
       dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
       n <- c(n,length(dat_tmp$to))
 
-      tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to ==1,]$exit,0.95))
+      tau_all <- c(tau_all,quantile(dat_tmp$exit,0.95))
       # ind_tau <- dat_tmp$exit >= tau
       #
       # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
@@ -51,15 +65,6 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
       data1[[k]] <- dat_tmp
     }
     tau <- min(tau_all)
-
-    for( k in 1:diff_groups){
-      dat_tmp <- data1[[k]]
-      ind_tau <- dat_tmp$exit >= tau
-
-      dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
-      dat_tmp$exit[ind_tau] <- tau
-      data1[[k]] <- dat_tmp
-    }
 
 
   }
@@ -152,7 +157,7 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
       dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
       n <- c(n,length(dat_tmp$to))
 
-      tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to ==1,]$exit,0.95))
+      tau_all <- c(tau_all,quantile(dat_tmp$exit,0.95))
       # ind_tau <- dat_tmp$exit >= tau
       #
       # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
@@ -161,14 +166,7 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
     }
     tau <- min(tau_all)
 
-    for( k in 1:diff_groups){
-      dat_tmp <- data1[[k]]
-      ind_tau <- dat_tmp$exit >= tau
 
-      dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
-      dat_tmp$exit[ind_tau] <- tau
-      data1[[k]] <- dat_tmp
-    }
 
 
   }

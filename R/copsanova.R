@@ -53,6 +53,9 @@
 #'  of the specified multiplier bootstrap.}
 #'  \item{Bsiter}{The number of bootstrap iterations.}
 #'  \item{weights}{The chosen multiplier bootstra method.}
+#'  \item{tau}{The chosen truncation time specifying the end of the relevant time window for
+#' the analysis.}
+#'
 #' @examples MACHT PHILIPP
 #' TO DO
 #'
@@ -100,6 +103,7 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
   }
   lev_names <- expand.grid(levels)
   if (nf == 1) {
+
     dat2 <- dat2[order(dat2[, 2]), ]
     response <- dat2[, 1]
     nr_hypo <- attr(terms(formula), "factors")
@@ -126,7 +130,7 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
       dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
       n <- c(n,length(dat_tmp$to))
 
-      tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to ==1,]$exit,0.95))
+      tau_all <- c(tau_all,quantile(dat_tmp$exit,0.95))
       # ind_tau <- dat_tmp$exit >= tau
       #
       # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
@@ -241,16 +245,18 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
         dat_tmp <- dat2[dat2$group == k, c("exit","to","group")]
         n <- c(n,length(dat_tmp$to))
 
-        tau_all <- c(tau_all,quantile(dat_tmp[dat_tmp$to =="cens",]$exit,0.95))
+        tau_all <- c(tau_all,quantile(dat_tmp$exit,0.95))
         # ind_tau <- dat_tmp$exit >= tau
         #
         # dat_tmp$to[ind_tau] <- "1"  # Alles was gr??er oder gleich tau ist, wird als unzensiert angesetzt, damit der Kaplan-Meier-Sch?tzer in tau auf Null f?llt.
         # dat_tmp$exit[ind_tau] <- tau
          data1[[k]] <- dat_tmp
       }
+    print(tau)
 
-    if(is.null(tau)){
+    if(is.null(tau) || is.na(tau)){
       tau <- min(tau_all)
+      print(tau)
     }
 
         for( k in 1:diff_groups){
@@ -271,11 +277,11 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
   output$input <- input_list
   output$bsiter <- BSiter
   output$weights <- weights
+  output$tau <- tau
 
   output$statistic <- cbind(copsanova_erg$test_statistics,round(copsanova_erg$value,4))
   rownames(output$statistic) <- fac_names
   colnames(output$statistic) <- c("Test statistic","p-value")
-
 
   class(output) <- "copsanova"
   return(output)
@@ -284,7 +290,9 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
 }
 
 # set.seed(1)
-#  copsanova("exit ~ treat*sex", "to", data = data, BSiter = 9,
-#                         weights = "pois", nested.levels.unique = FALSE)
-
+  # data <- read.csv("C:/Users/stein/Desktop/Quatsch/cop_data_test.csv")
+  #
+  # copsanova("exit ~ sex", "to", data = data, BSiter = 9,
+  #                        weights = "pois", nested.levels.unique = FALSE)
+  #
 
