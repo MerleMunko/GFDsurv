@@ -61,7 +61,7 @@ GFDsurvGUI <- function() {
                           selectInput("Method", "Select Testing Method:",
                                       c("CASANOVA: Cumulative Aalen survival analyis-of-variance" = "casanova",
                                         "MedSANOVA: Median survival analyis-of-variance"= "medSANOVA",
-                                        "CopSANOVA: concordance probability SANOVA"="copSANOVA"))
+                                        "CopSANOVA: Concordance probability survival analyis-of-variance"="copSANOVA"))
                         ),
 
 
@@ -72,15 +72,20 @@ GFDsurvGUI <- function() {
                             )
                           ),
 
+                        shinyjs::hidden(
+                          h5(id="titleWeights",strong("Which weight functions w should be combined?"), style = "color:grey")
+                        ),
+
+
                           splitLayout(cellWidths = c("35%","60%","5%"),
                                       shinyjs::hidden(
-                            checkboxGroupInput("Weights", "pre-specified weights",selected = c("crossing","proportional"),
+                            checkboxGroupInput("Weights", "Pre-specified weights",selected = c("crossing","proportional"),
                                       choiceNames = list("Crossing", "Proportional"),
                                       choiceValues = list("crossing", "proportional"))
                                       ),
 
                             shinyjs::hidden(
-                            selectInput("weights1","the exponents (r,g) of weights  w(x) = x^r(1-x)^g ",
+                            selectInput("weights1","Specify the exponents (r,g) of weights  w(x) = x^r(1-x)^g ",
                                         paste0("(",expand.grid(0:10,0:10)[,1],",",expand.grid(0:10,0:10)[,2],")"),
                                         multiple=TRUE,selectize = TRUE)
                             )
@@ -109,17 +114,25 @@ GFDsurvGUI <- function() {
                             )
                           ),
 
-                          splitLayout(cellWidths = c("20%","20%","30%"),
+                          splitLayout(cellWidths = c("20%","10%","20%","10%","30%"),
                                       shinyjs::hidden(
                             sliderTextInput(
                               inputId = "sliderBoot",
-                              label = "bootstrap type:",
+                              label = "Bootstrap type:",
                               choices = c("wild","weird"),
                               selected = "wild")
                                       ),
                             shinyjs::hidden(
-                            selectInput("methodBoot", "distrubution:",
+                              selectInput("Platz1", "Distribution:",
+                                          c("Poisson"="pois","Normal"="norm"))
+                            ),
+                            shinyjs::hidden(
+                            selectInput("methodBoot", "Distribution:",
                                         c("Poisson"="pois","Normal"="norm"))
+                            ),
+                            shinyjs::hidden(
+                              selectInput("Platz2", "Distribution:",
+                                          c("Poisson"="pois","Normal"="norm"))
                             ),
                             shinyjs::hidden(
                             checkboxInput("correction", "correction for liberal test", TRUE)
@@ -190,6 +203,9 @@ GFDsurvGUI <- function() {
              shinyjs::hide(id = "tau")
              shinyjs::hide(id = "tau_suggest")
              shinyjs::hide(id = "process")
+             shinyjs::hide(id = "titleWeights")
+             shinyjs::hide(id = "Platz1")
+             shinyjs::hide(id = "Platz2")
 
            }else{
              shinyjs::show(id = "Method")
@@ -202,6 +218,7 @@ GFDsurvGUI <- function() {
 
                if (input$Method != "casanova") {
 
+                 shinyjs::hide(id = "titleWeights")
                  shinyjs::hide("Weights")
                  shinyjs::hide("weights1")
 
@@ -210,6 +227,7 @@ GFDsurvGUI <- function() {
 
                if (input$Method == "casanova") {
 
+                 shinyjs::show(id = "titleWeights")
                  shinyjs::show("Weights")
                  shinyjs::show("weights1")
 
