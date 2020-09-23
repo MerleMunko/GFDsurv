@@ -111,7 +111,9 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
     dat2  <- dat2[order(dat2["Var"]),]
     event <- dat2[,"event"]
     group <- dat2$group
+
     dat3 <- dat2[,c("Var","event","group")]
+
 
     erg_stat <-  wrap_sim2(dat3,group = dat3[,3],hypo_matrices,
                            var_method = var_method, var_level = var_level)
@@ -253,11 +255,11 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
    return(output)
 
 }
-#
+
 # medsanova(formula= "eventT ~ treat*prot_groups", event ="dc",
-#           data = data, nperm = 10, alpha = 0.5,var_level = 0.95,
+#           data = data, nperm = 10, alpha = 0.005,var_level = 0.95,
 #           var_method= "onesided",nested.levels.unique = FALSE)
 #
 #
 #
-# data <- read.csv("C:/Users/stein/Desktop/Quatsch/Testdaten.csv")
+#  data <- read.csv("C:/Users/stein/Desktop/Quatsch/Testdaten.csv")

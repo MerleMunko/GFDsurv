@@ -274,6 +274,11 @@ perm_fun <- function(values, nperm, t_mat_list, alpha , var_method, var_level = 
   test_stat_erg <- apply(group_new, 2,
                          function(x) wrap_sim2(values = values2, group = x,
                                               t_mat_list = t_mat_list, var_method = var_method, var_level = var_level) )
+   if(length(t_mat_list)==1){
+     test_stat_erg <- t(test_stat_erg)
+     rownames(test_stat_erg) <- "int_1"
+   }
+
   q <- list()
   for( i in 1:length(t_mat_list)){
     q <- unname(quantile(test_stat_erg[paste0("int_", i), ], 1-alpha, na.rm = TRUE))
