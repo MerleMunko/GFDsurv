@@ -77,6 +77,8 @@ the largest possible censoring times per group.
  of the specified multiplier bootstrap.}
  \item{Bsiter}{The number of bootstrap iterations.}
  \item{weights}{The chosen multiplier bootstra method.}
+ \item{tau}{The chosen truncation time specifying the end of the relevant time window for
+the analysis.}
 }
 \examples{
 MACHT PHILIPP
