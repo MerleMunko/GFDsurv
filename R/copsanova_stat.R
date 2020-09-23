@@ -331,7 +331,6 @@ test.data <- function(data, n, BSiter, Gewichte, c.matrix){
     }
   }
 
-  #print(p.matrix)
 
   # Versuche mit der naechsten Abfrage zu verhindern, dass es irgendwo sonst zu Fehlern kommt.
   if(anyGroupEmpty){
@@ -352,9 +351,7 @@ test.data <- function(data, n, BSiter, Gewichte, c.matrix){
 
     FNT <-  lapply(T.matrix, FNT_mat)
 
-    #print(p.vec)
-    #print(V)
-    #print(T.matrix)
+
 
     ## Bestimme das Quantil mittels DDMB
 

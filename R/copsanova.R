@@ -120,7 +120,6 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
     dat2$to <- ifelse(dat2$event == 1,"cens",1)
         data1 <- list()
 
-    print(dat2)
     n <- numeric(0)
     tau_all <- numeric(0)
     for( k in 1:diff_groups){
