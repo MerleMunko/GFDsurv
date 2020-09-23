@@ -60,8 +60,8 @@ GFDsurvGUI <- function() {
                         shinyjs::hidden(
                           selectInput("Method", "Select Testing Method:",
                                       c("CASANOVA: Cumulative Aalen survival analyis-of-variance" = "casanova",
-                                        "medSANOVA: Median survival analyis-of-variance"= "medSANOVA",
-                                        "copSANOVA: concordance probability SANOVA"="copSANOVA"))
+                                        "MedSANOVA: Median survival analyis-of-variance"= "medSANOVA",
+                                        "CopSANOVA: concordance probability SANOVA"="copSANOVA"))
                         ),
 
 
@@ -72,16 +72,16 @@ GFDsurvGUI <- function() {
                             )
                           ),
 
-                          splitLayout(cellWidths = c("20%","50%","20%"),
+                          splitLayout(cellWidths = c("35%","60%","5%"),
                                       shinyjs::hidden(
-                            checkboxGroupInput("Weights", "Choose weights:",selected = c("crossing","proportional"),
+                            checkboxGroupInput("Weights", "pre-specified weights",selected = c("crossing","proportional"),
                                       choiceNames = list("Crossing", "Proportional"),
                                       choiceValues = list("crossing", "proportional"))
                                       ),
 
                             shinyjs::hidden(
-                            selectInput("weights1","User specifeid directions of form w(x) = x^r(1-x)^g with (r,g)",
-                                        paste0("(",expand.grid(1:10,1:10)[,1],",",expand.grid(1:10,1:10)[,2],")"),
+                            selectInput("weights1","the exponents (r,g) of weights  w(x) = x^r(1-x)^g ",
+                                        paste0("(",expand.grid(0:10,0:10)[,1],",",expand.grid(0:10,0:10)[,2],")"),
                                         multiple=TRUE,selectize = TRUE)
                             )
 
@@ -105,7 +105,7 @@ GFDsurvGUI <- function() {
 
                           splitLayout(
                             shinyjs::hidden(
-                            numericInput("nperm", "number of permutations", value = 1999)
+                            numericInput("nperm", "Number of permutations", value = 1999)
                             )
                           ),
 
@@ -129,23 +129,23 @@ GFDsurvGUI <- function() {
 
                           splitLayout(cellWidths = c("15%","85%"),
                                       shinyjs::hidden(
-                          numericInput("nboot", "number of bootstraps iterations", value = 99)
+                          numericInput("nboot", "Number of bootstrap iterations", value = 99)
                                       )
                           ),
 
-
-
-                          splitLayout(
+                        splitLayout(cellWidths = c("15%","85%"),
                             shinyjs::hidden(
-                            numericInput("tau", "Choose Tau",NULL)
-                            ),
-                            shinyjs::hidden(
-                            actionButton("tau_suggest", "Calculate automaticly tau", class = "btn-primary")
-                            )
-                            ),
+                            numericInput("tau", "Endpoint tau of the relevant time window [0,tau]",NULL)
+                            )),
+
+                        shinyjs::hidden(
+                          actionButton("tau_suggest", "Specify tau automatically", class = "btn-primary")
+                        ),
+
                         shinyjs::hidden(
                           actionButton("process", "Calculate", class = "btn-primary")
                         )
+
                         ),
 
 
@@ -366,9 +366,9 @@ GFDsurvGUI <- function() {
             inputWeights <- isolate(input$weights1)
 
             if(is.null(inputWeights)){}else{
-              expand.grid(1:10,1:10)
-              kombiAll <- paste0("(",expand.grid(1:10,1:10)[,1],",",expand.grid(1:10,1:10)[,2],")")
-              kombi <- expand.grid(1:10,1:10)[which(kombiAll %in% inputWeights),]
+              expand.grid(0:10,0:10)
+              kombiAll <- paste0("(",expand.grid(0:10,0:10)[,1],",",expand.grid(0:10,0:10)[,2],")")
+              kombi <- expand.grid(0:10,0:10)[which(kombiAll %in% inputWeights),]
 
               for (i in 1:(dim(kombi)[1])){
                 rg[[length(rg)+1]] <- as.numeric(kombi[i,])
@@ -380,7 +380,6 @@ GFDsurvGUI <- function() {
                        event = input$dynamic,
                        data = isolate(data),
                        nperm = isolate(input$nperm),
-                       alpha = isolate(input$alpha),
                        cross = crossing,
                        nested.levels.unique = FALSE,
                        rg = isolate(rg))
@@ -390,12 +389,11 @@ GFDsurvGUI <- function() {
             if (input$Method == "medSANOVA" ){
               data <- as.data.frame(datasetInput())
               output$result <- renderPrint({
-                medSANOVA(formula= isolate(input$formula),
+                medsanova(formula= isolate(input$formula),
                          event = input$dynamic,
                          data = isolate(data),
-                         variant = isolate(input$variante),
+                         var_method = isolate(input$variante),
                          nperm = isolate(input$nperm),
-                         alpha = isolate(input$alpha),
                          nested.levels.unique = FALSE
                          )
               })
