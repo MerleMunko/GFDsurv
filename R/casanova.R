@@ -26,6 +26,7 @@
 #' factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each
 #'  level of the main factor.
+#'
 #' @details
 #' The \code{casanova} function calculates the Wald-type statistic of weighted
 #' Nelson-Aalen type integrals
@@ -42,7 +43,8 @@
 #'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
 #'   the second one is based on a permutation procedure.
 #'
-#'  @return A \code{casanova} object containing the following components:
+#'  @return
+#'   A \code{casanova} object containing the following components:
 #'  \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
 #'  \item{pvalues_per}{The p-values of the permutation approach}
 #'  \item{statistics}{The value of the casanova along with degrees of freedom of the
