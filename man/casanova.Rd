@@ -46,6 +46,21 @@ weights
   \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.}
 }
+\value{
+A \code{casanova} object containing the following components:
+ \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
+ \item{pvalues_per}{The p-values of the permutation approach}
+ \item{statistics}{The value of the casanova along with degrees of freedom of the
+ central chi-square distribution and p-value, as well as the p-value of the
+  permutation procedure.}
+ \item{rg}{A list containg the exponents of the direction considered in the
+ statistical analysis}
+ \item{cross}{logical. Was the crossing direction considered in the statistical
+ analysis}
+ \item{indep}{logical. Were the directions specified by the user linearly
+ independent?}
+ \item{nperm}{The number of permutations used for calculating the permuted p-value.}
+}
 \description{
 The function \code{casanova} calculates the Wald-type statistic based on the
 combination of differently weighted Nelson-Aalen-type integrals. Respective p-values
@@ -66,21 +81,6 @@ weights if the original weights violate the aforemention assumption.
   The \code{casanova} function returns the test statistic as well as two
   corresponding p-values: the first is based on a \eqn{\chi^2} approximation and
   the second one is based on a permutation procedure.
-
- @return
-  A \code{casanova} object containing the following components:
- \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
- \item{pvalues_per}{The p-values of the permutation approach}
- \item{statistics}{The value of the casanova along with degrees of freedom of the
- central chi-square distribution and p-value, as well as the p-value of the
-  permutation procedure.}
- \item{rg}{A list containg the exponents of the direction considered in the
- statistical analysis}
- \item{cross}{logical. Was the crossing direction considered in the statistical
- analysis}
- \item{indep}{logical. Were the directions specified by the user linearly
- independent?}
- \item{nperm}{The number of permutations used for calculating the permuted p-value.}
 }
 \examples{
 library("survival")
