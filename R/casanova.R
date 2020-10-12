@@ -27,8 +27,7 @@
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each
 #'  level of the main factor.
 #'
-#' @details
-#' The \code{casanova} function calculates the Wald-type statistic of weighted
+#' @details The \code{casanova} function calculates the Wald-type statistic of weighted
 #' Nelson-Aalen type integrals
 #' for general factorial survival designs. Crossed as well as hierachically nested designs are
 #' implemented. Moreover, the approach allows the combination of
@@ -56,7 +55,7 @@
 #'  analysis}
 #'  \item{indep}{logical. Were the directions specified by the user linearly
 #'  independent?}
-#'  \item{nperm}{The number of permutations used for calculating the permuted p-value.
+#'  \item{nperm}{The number of permutations used for calculating the permuted p-value.}
 #' @examples
 #' library("survival")
 #' data(veteran)

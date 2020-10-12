@@ -52,7 +52,35 @@ combination of differently weighted Nelson-Aalen-type integrals. Respective p-va
 are obtained by a \eqn{\chi^2}-approximation and a permutation approach, respectively.
 }
 \details{
+The \code{casanova} function calculates the Wald-type statistic of weighted
+Nelson-Aalen type integrals
+for general factorial survival designs. Crossed as well as hierachically nested designs are
+implemented. Moreover, the approach allows the combination of
+different weights into a
+joint statistic. The user can choose between weights of the following form:
+w(x) = 1 - 2x (\code{cross = TRUE}) and w(x) = x^r * (1-x)^g for natural numbers
+r,g (including 0). The function automatically check whether the specified weights
+fulfill the linear independence assumption and choose a subset of linearly independent
+weights if the original weights violate the aforemention assumption.
 
+  The \code{casanova} function returns the test statistic as well as two
+  corresponding p-values: the first is based on a \eqn{chi^2} approximation and
+  the second one is based on a permutation procedure.
+
+ @return
+  A \code{casanova} object containing the following components:
+ \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
+ \item{pvalues_per}{The p-values of the permutation approach}
+ \item{statistics}{The value of the casanova along with degrees of freedom of the
+ central chi-square distribution and p-value, as well as the p-value of the
+  permutation procedure.}
+ \item{rg}{A list containg the exponents of the direction considered in the
+ statistical analysis}
+ \item{cross}{logical. Was the crossing direction considered in the statistical
+ analysis}
+ \item{indep}{logical. Were the directions specified by the user linearly
+ independent?}
+ \item{nperm}{The number of permutations used for calculating the permuted p-value.}
 }
 \examples{
 library("survival")
