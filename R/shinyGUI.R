@@ -4,6 +4,8 @@
 #' @aliases GFDsurvGUI
 #'
 #'
+#' @import shiny
+#'
 #' @export
 
 GFDsurvGUI <- function() {
