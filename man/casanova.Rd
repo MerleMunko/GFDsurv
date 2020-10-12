@@ -64,7 +64,7 @@ fulfill the linear independence assumption and choose a subset of linearly indep
 weights if the original weights violate the aforemention assumption.
 
   The \code{casanova} function returns the test statistic as well as two
-  corresponding p-values: the first is based on a \eqn{chi^2} approximation and
+  corresponding p-values: the first is based on a \eqn{\chi^2} approximation and
   the second one is based on a permutation procedure.
 
  @return

@@ -48,7 +48,7 @@
 #'   The \code{copsanova} function returns the test statistic as well as a
 #'   corresponding p-value based on a the specified multiplier procedure.
 #'
-#'  @return A \code{copsanova} object containing the following components:
+#' @return An  \code{copsanova} object containing the following components:
 #'  \item{statistics}{The value of the copsanova along with the p-value
 #'  of the specified multiplier bootstrap.}
 #'  \item{Bsiter}{The number of bootstrap iterations.}

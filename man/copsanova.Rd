@@ -48,6 +48,15 @@ factor(s) are labeled uniquely or not.
 
 \item{Bsiter}{The number of bootstrap iterations; the default is 1999.}
 }
+\value{
+An  \code{copsanova} object containing the following components:
+ \item{statistics}{The value of the copsanova along with the p-value
+ of the specified multiplier bootstrap.}
+ \item{Bsiter}{The number of bootstrap iterations.}
+ \item{weights}{The chosen multiplier bootstrap method.}
+ \item{tau}{The chosen truncation time specifying the end of the relevant time window for
+the analysis.}
+}
 \description{
 The function \code{copanova} calculates the ANOVA-rank-type statistic for general
 factorial
@@ -71,14 +80,6 @@ the largest possible censoring times per group.
 
   The \code{copsanova} function returns the test statistic as well as a
   corresponding p-value based on a the specified multiplier procedure.
-
- @return A \code{copsanova} object containing the following components:
- \item{statistics}{The value of the copsanova along with the p-value
- of the specified multiplier bootstrap.}
- \item{Bsiter}{The number of bootstrap iterations.}
- \item{weights}{The chosen multiplier bootstrap method.}
- \item{tau}{The chosen truncation time specifying the end of the relevant time window for
-the analysis.}
 }
 \examples{
 MACHT PHILIPP

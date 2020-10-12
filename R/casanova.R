@@ -39,11 +39,10 @@
 #' weights if the original weights violate the aforemention assumption.
 #'
 #'   The \code{casanova} function returns the test statistic as well as two
-#'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
+#'   corresponding p-values: the first is based on a \eqn{\chi^2} approximation and
 #'   the second one is based on a permutation procedure.
 #'
-#'  @return
-#'   A \code{casanova} object containing the following components:
+#' @return  A \code{casanova} object containing the following components:
 #'  \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
 #'  \item{pvalues_per}{The p-values of the permutation approach}
 #'  \item{statistics}{The value of the casanova along with degrees of freedom of the
@@ -56,6 +55,7 @@
 #'  \item{indep}{logical. Were the directions specified by the user linearly
 #'  independent?}
 #'  \item{nperm}{The number of permutations used for calculating the permuted p-value.}
+#'
 #' @examples
 #' library("survival")
 #' data(veteran)

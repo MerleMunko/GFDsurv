@@ -43,6 +43,16 @@ factor(s) are labeled uniquely or not.
  @param  var_level A number between 0 and 1 specifying the confidence level for the
  variance estimation method; the default value is 0.9.}
 }
+\value{
+An  \code{medsanova} object containing the following components:
+ \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
+ \item{pvalues_per}{The p-values of the permutation approach}
+ \item{statistics}{The value of the Wald-type test statistic along with the
+ degrees of freedom of the \eqn{\chi^2}-distribution and the
+ respective p-value, as well as the p-value of the
+  permutation procedure.}
+ \item{nperm}{The number of permutations used for calculating the permuted p-value.}
+}
 \description{
 The function \code{medsanova} calculates the Wald-type test statistic for
 inferring median survival differences in general factorial designs.
@@ -57,15 +67,6 @@ interval approach is used and the level of this confidence interval can be speci
   The \code{medsanova} function returns the test statistic as well as two
   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
   the second one is based on a permutation procedure.
-
- @return A \code{medsanova} object containing the following components:
- \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}
- \item{pvalues_per}{The p-values of the permutation approach}
- \item{statistics}{The value of the Wald-type test statistic along with the
- degrees of freedom of the \eqn{\chi^2}-distribution and the
- respective p-value, as well as the p-value of the
-  permutation procedure.}
- \item{nperm}{The number of permutations used for calculating the permuted p-value.}
 }
 \examples{
 library("survival")
