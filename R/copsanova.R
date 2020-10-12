@@ -25,7 +25,7 @@
 #' with a correcting factor for liberality by "corrLibPois" and "corrLibNorm".
 #' @param tau The truncation time specifying the end of the relevant time window for
 #' the analysis.
-#' By default(\code{NULL}), the smallest 95%-quantile of the times per group is
+#' By default(\code{NULL}), the smallest 95"\%"-quantile of the times per group is
 #' chosen.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested
 #' factor(s) are labeled uniquely or not.
@@ -52,7 +52,7 @@
 #'  \item{statistics}{The value of the copsanova along with the p-value
 #'  of the specified multiplier bootstrap.}
 #'  \item{Bsiter}{The number of bootstrap iterations.}
-#'  \item{weights}{The chosen multiplier bootstra method.}
+#'  \item{weights}{The chosen multiplier bootstrap method.}
 #'  \item{tau}{The chosen truncation time specifying the end of the relevant time window for
 #' the analysis.}
 #'

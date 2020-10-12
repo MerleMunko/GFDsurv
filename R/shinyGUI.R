@@ -3,6 +3,7 @@
 #'
 #' @aliases GFDsurvGUI
 #'
+#'
 #' @export
 
 GFDsurvGUI <- function() {
@@ -116,7 +117,7 @@ GFDsurvGUI <- function() {
 
                           splitLayout(cellWidths = c("20%","10%","20%","10%","30%"),
                                       shinyjs::hidden(
-                            sliderTextInput(
+                          shinyWidgets::sliderTextInput(
                               inputId = "sliderBoot",
                               label = "Bootstrap type:",
                               choices = c("wild","weird"),

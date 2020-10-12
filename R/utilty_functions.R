@@ -1,5 +1,5 @@
 #' @export
-print.casanova<- function(x, ...) {
+print.casanova <- function(x, ...) {
   cat("Call:", "\n")
   print(x$input$formula)
 

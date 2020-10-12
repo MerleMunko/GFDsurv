@@ -58,7 +58,6 @@
 #' @export
 #'
 #'
-# FIXME: test mit nur einer Einflussvariable
 
 medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
                        var_method = "twosided", var_level = 0.9,

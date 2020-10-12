@@ -49,7 +49,7 @@
 #'  central chi-square distribution and p-value, as well as the p-value of the
 #'   permutation procedure.}
 #'  \item{rg}{A list containg the exponents of the direction considered in the
-#'  statistical analysis
+#'  statistical analysis}
 #'  \item{cross}{logical. Was the crossing direction considered in the statistical
 #'  analysis}
 #'  \item{indep}{logical. Were the directions specified by the user linearly
