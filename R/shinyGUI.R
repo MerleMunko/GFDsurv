@@ -161,7 +161,7 @@ GFDsurvGUI <- function() {
                         shinyjs::hidden(
                           actionButton("process", "Calculate", class = "btn-primary")
                         )
-
+                        , width = 8
                         ),
 
 
@@ -169,8 +169,8 @@ GFDsurvGUI <- function() {
 
                         mainPanel(
 
-                          verbatimTextOutput("result")
-
+                          verbatimTextOutput("result"),
+                          width = 4
 
                         )
                       )
