@@ -98,13 +98,17 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
   nadat2 <- nadat[-c(1,nf+2)]
   dat2[,"time"] <- dat2[,"time"]  + runif(length(dat2[,"time"])) * 10^-7
 
-
+  weight_names <- c("Combination")
   #Koeffizientencheck
             if (is.null(rg) == FALSE) {
               out <- coeff.check(cross = cross, rg = rg)
               cross <- out$cross
               indep <- out$indep
               rg <- out$rg
+              weight_names <- c("Combination", rep(0,length(rg)))
+              for(i in 1:length(rg)){
+                weight_names[i+1] <- paste0("x^",rg[[i]][1],"(1-x)^",rg[[i]][2])
+              }
             } else {
               indep <- TRUE
             }
@@ -124,10 +128,6 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
               })
             }
 
-            weight_names <- c("Combination", rep(0,length(rg)))
-            for(i in 1:length(rg)){
-              weight_names[i+1] <- paste0("x^",rg[[i]][1],"(1-x)^",rg[[i]][2])
-            }
             if(cross == TRUE){
               weight_names <- c(weight_names,"1-2x")
             }
@@ -135,7 +135,6 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
             if(sum(unlist(lapply(rg,function(x) sum(x == c(0,0))==2))==1)==1){
               weight_names[1+which(unlist(lapply(rg,function(x) sum(x == c(0,0))==2))==1)] <-"prop"
             }
-
 
   fl <- NA
   for (aa in 1:nf) {
