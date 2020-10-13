@@ -36,7 +36,6 @@ GFDsurvGUI <- function() {
                                                                     ";",
                                                                     ".",
                                                                     "|"))
-
                           ),
 
                           tags$head(tags$style(HTML("
@@ -67,13 +66,19 @@ GFDsurvGUI <- function() {
                                         "CopSANOVA: Concordance probability survival analyis-of-variance"="copSANOVA"))
                         ),
 
-
                           splitLayout(
                             uiOutput(outputId = 'dynamicInput'),
                             shinyjs::hidden(
                              textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
+                            ),
+                            shinyjs::hidden(
+                              checkboxInput("nested", "nested.levels", FALSE)
                             )
                           ),
+
+                        splitLayout(
+                          uiOutput(outputId = 'dynamicInput2')
+                        ),
 
                         shinyjs::hidden(
                           h5(id="titleWeights",strong("Which weight functions w should be combined?"), style = "color:grey")
@@ -209,10 +214,13 @@ GFDsurvGUI <- function() {
              shinyjs::hide(id = "titleWeights")
              shinyjs::hide(id = "Platz1")
              shinyjs::hide(id = "Platz2")
+             shinyjs::hide(id = "nested")
+
 
            }else{
              shinyjs::show(id = "Method")
              shinyjs::show(id = "formula")
+             shinyjs::show(id = "nested")
              shinyjs::show(id = "process")
              shinyjs::hide(id = "titleLoadData")
 
@@ -337,6 +345,33 @@ GFDsurvGUI <- function() {
            }
          })
 
+         values2 <- reactiveValues()
+
+         output$dynamicInput2 <- renderUI({
+           if (input$Method == "casanova" || input$Method == "medSANOVA"|| input$Method == "copSANOVA") {
+
+             # This input exists if the `static`
+             # one is equal to `A` only
+             selectInput(inputId = 'dynamic2',
+                         label = "Label of censored variable",
+                         choices = unique(datasetInput()[,values$dyn]))
+           } else {
+             return(NULL)}
+
+         })
+         ## this bit fixes the issue
+
+         observe({
+           if (input$Method == "casanova" || input$Method == "medSANOVA"|| input$Method == "copSANOVA") {
+             values2$dyn <- input$dynamic2
+           } else {
+             values2$dyn <- NULL
+           }
+         })
+
+
+
+
 
 
 
@@ -362,7 +397,7 @@ GFDsurvGUI <- function() {
          observeEvent(input$process, {
 
 
-          if (input$formula == "~ + ") {
+          if (input$formula == "timeFactor ~ FactorA*FactorB") {
 
             output$result <- renderPrint({
               "'formula' missing or invalid"
@@ -370,8 +405,17 @@ GFDsurvGUI <- function() {
 
           } else {
 
+            if(length(unique(as.data.frame(datasetInput())[,input$dynamic])) != 2){
+              output$result <- renderPrint({
+                "more or less then two censcoring types"
+              })
+
+            } else {
+
             if (input$Method == "casanova" ){
             data <- as.data.frame(datasetInput())
+            event <- data[,input$dynamic]
+            data[,input$dynamic] <- ifelse(event == input$dynamic2,1,0)
 
             rg <- list()
             givenWeights <- isolate(input$Weights)
@@ -395,6 +439,9 @@ GFDsurvGUI <- function() {
                 rg[[length(rg)+1]] <- as.numeric(kombi[i,])
               }
             }
+            if(length(rg)==0){
+              rg = list(c(0,0))
+              }
 
             output$result <- renderPrint({
               casanova(formula= isolate(input$formula),
@@ -402,25 +449,31 @@ GFDsurvGUI <- function() {
                        data = isolate(data),
                        nperm = isolate(input$nperm),
                        cross = crossing,
-                       nested.levels.unique = FALSE,
+                       nested.levels.unique = isolate(input$nested),
                        rg = isolate(rg))
             })
             }
 
             if (input$Method == "medSANOVA" ){
               data <- as.data.frame(datasetInput())
+              event <- data[,input$dynamic]
+              data[,input$dynamic] <- ifelse(event == input$dynamic2,1,0)
+
               output$result <- renderPrint({
                 medsanova(formula= isolate(input$formula),
                          event = input$dynamic,
                          data = isolate(data),
                          var_method = isolate(input$variante),
                          nperm = isolate(input$nperm),
-                         nested.levels.unique = FALSE
+                         nested.levels.unique = isolate(input$nested)
                          )
               })
             }
             if (input$Method == "copSANOVA" ){
               data <- as.data.frame(datasetInput())
+              event <- data[,input$dynamic]
+              data[,input$dynamic] <- ifelse(event == input$dynamic2,1,0)
+
               bootstrapMethod <- isolate(input$sliderBoot)
               bootstrapDis <- isolate(input$methodBoot)
               correction <- isolate(input$correction)
@@ -454,7 +507,7 @@ GFDsurvGUI <- function() {
                           BSiter = isolate(input$nboot),
                           weights = weights,
                           tau = isolate(input$tau),
-                          nested.levels.unique = FALSE
+                          nested.levels.unique = isolate(input$nested)
                 )
               })
 
@@ -463,6 +516,7 @@ GFDsurvGUI <- function() {
 
           }
 
+          }
          }
          ) #end of observeEvent(input$process
 
