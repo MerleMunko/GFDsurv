@@ -38,7 +38,7 @@ with a correcting factor for liberality by "corrLibPois" and "corrLibNorm".}
 
 \item{tau}{The truncation time specifying the end of the relevant time window for
 the analysis.
-By default(\code{NULL}), the smallest 95\%-quantile of the times per group is
+By default (\code{NULL}), the smallest 95\%-quantile of the times per group is
 chosen.}
 
 \item{nested.levels.unique}{A logical specifying whether the levels of the nested
@@ -82,8 +82,13 @@ the largest possible censoring times per group.
   corresponding p-value based on a the specified multiplier procedure.
 }
 \examples{
-MACHT PHILIPP
-TO DO
+library(condSURV)
+data(colonCS)
+out <- copsanova(formula ="Stime ~ rx*sex",event = "event",
+                 data = colonCS)
+
+##Detailed informations:
+summary(out)
 
 }
 \references{

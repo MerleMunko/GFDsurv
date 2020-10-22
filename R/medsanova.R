@@ -32,7 +32,7 @@
 #' interval approach is used and the level of this confidence interval can be specified by \code{var_level}.
 #'
 #'   The \code{medsanova} function returns the test statistic as well as two
-#'   corresponding p-values: the first is based on a \eqn{chi^2} approximation and
+#'   corresponding p-values: the first is based on a \eqn{\chi^2} approximation and
 #'   the second one is based on a permutation procedure.
 #' @return An  \code{medsanova} object containing the following components:
 #'  \item{pvalues_stat}{The p-values obtained by \eqn{\chi^2}-approximation}

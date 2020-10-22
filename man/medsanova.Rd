@@ -65,7 +65,7 @@ implemented. To estimate the sample medians' variances, a one-sided (resp. two-s
 interval approach is used and the level of this confidence interval can be specified by \code{var_level}.
 
   The \code{medsanova} function returns the test statistic as well as two
-  corresponding p-values: the first is based on a \eqn{chi^2} approximation and
+  corresponding p-values: the first is based on a \eqn{\chi^2} approximation and
   the second one is based on a permutation procedure.
 }
 \examples{

@@ -25,7 +25,7 @@
 #' with a correcting factor for liberality by "corrLibPois" and "corrLibNorm".
 #' @param tau The truncation time specifying the end of the relevant time window for
 #' the analysis.
-#' By default(\code{NULL}), the smallest 95\%-quantile of the times per group is
+#' By default (\code{NULL}), the smallest 95\%-quantile of the times per group is
 #' chosen.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested
 #' factor(s) are labeled uniquely or not.
@@ -56,8 +56,15 @@
 #'  \item{tau}{The chosen truncation time specifying the end of the relevant time window for
 #' the analysis.}
 #'
-#' @examples MACHT PHILIPP
-#' TO DO
+#' @examples
+#' library(condSURV)
+#' data(colonCS)
+#' out <- copsanova(formula ="Stime ~ rx*sex",event = "event",
+#'                  data = colonCS)
+#'
+#' ##Detailed informations:
+#'summary(out)
+
 #'
 #' @references
 #'  Dobler, D. and Pauly, M. (2020). Factorial analyses of treatment effects
@@ -249,11 +256,11 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
         # dat_tmp$exit[ind_tau] <- tau
          data1[[k]] <- dat_tmp
       }
-    print(tau)
+
 
     if(is.null(tau) || is.na(tau)){
       tau <- min(tau_all)
-      print(tau)
+
     }
 
         for( k in 1:diff_groups){
