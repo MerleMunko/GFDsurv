@@ -5,6 +5,7 @@
 #'
 #'
 #' @import shiny
+#' @import shinyjs
 #'
 #' @export
 
@@ -66,19 +67,23 @@ GFDsurvGUI <- function() {
                                         "CopSANOVA: Concordance probability survival analyis-of-variance"="copSANOVA"))
                         ),
 
-                          splitLayout(
+                          splitLayout(cellWidths = c("40%","40%"),
                             uiOutput(outputId = 'dynamicInput'),
-                            shinyjs::hidden(
-                             textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
-                            ),
-                            shinyjs::hidden(
-                              checkboxInput("nested", "nested.levels", FALSE)
-                            )
+                            uiOutput(outputId = 'dynamicInput2')
+
                           ),
 
-                        splitLayout(
-                          uiOutput(outputId = 'dynamicInput2')
+                        splitLayout(cellWidths = c("60%"),
+                          shinyjs::hidden(
+                            textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
+                          )
                         ),
+                        splitLayout(cellWidths = c("60%"),
+                          shinyjs::hidden(
+                            checkboxInput("nested", "Are the levels of nested factors the same for each level main factor?", FALSE)
+                          )
+                        ),
+
 
                         shinyjs::hidden(
                           h5(id="titleWeights",strong("Which weight functions w should be combined?"), style = "color:grey")
@@ -116,7 +121,7 @@ GFDsurvGUI <- function() {
 
 
 
-                          splitLayout(
+                          splitLayout(cellWidths = c("15%"),
                             shinyjs::hidden(
                             numericInput("nperm", "Number of permutations", value = 1999)
                             )
@@ -407,7 +412,7 @@ GFDsurvGUI <- function() {
 
             if(length(unique(as.data.frame(datasetInput())[,input$dynamic])) != 2){
               output$result <- renderPrint({
-                "more or less then two censcoring types"
+                "ERROR: more or less then two censcoring types"
               })
 
             } else {
