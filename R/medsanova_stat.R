@@ -207,7 +207,9 @@ test_stat <- function(values, t_mat, var_out) {
   n <- nrow(values)
   med_vec <- var_out$Median
   sig_vec <- var_out$Variance
-  if(any(is.infinite(med_vec))) return(NA)
+  if(any(is.infinite(med_vec))) {
+    stop("Median does not exist in all subgroups!")
+  }
   if(any(is.na(sig_vec))) return(NA)
 
   return(n * t(t_mat %*% med_vec) %*%
