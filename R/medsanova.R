@@ -14,7 +14,6 @@
 #' indicator. Default option is \code{NULL}.
 #' @param nperm The number of permutations used for calculating the permuted p-value.
 #'   The default option is 1999.
-#' @param alpha A number specifying the significance level; the default is 0.05.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested
 #' factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each
@@ -58,11 +57,11 @@
 #'
 #'
 
-medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
+medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999,
                        var_method = "twosided", var_level = 0.9,
                        nested.levels.unique = FALSE){
   input_list <- list(formula = formula, event ="event", data = data, nperm = nperm,
-                     alpha = alpha, var_level = var_level)
+                     var_level = var_level)
   #Zeit und in Formel einbinden
   formula2 <-  paste0(formula,"*",event)
   dat <- model.frame(formula2, data)
@@ -117,7 +116,7 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
                            var_method = var_method, var_level = var_level)
     out <- list()
 
-    erg_perm <- perm_fun(dat3, nperm, hypo_matrices, alpha,
+    erg_perm <- perm_fun(dat3, nperm, hypo_matrices,
                          var_method = var_method, var_level = var_level)
 
     for(j in 1:length(hypo_matrices)){
@@ -221,7 +220,7 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
                            var_method = var_method, var_level = var_level)
     out <- list()
 
-    erg_perm <- perm_fun(dat3, nperm, hypo_matrices, alpha,
+    erg_perm <- perm_fun(dat3, nperm, hypo_matrices,
                          var_method = var_method, var_level = var_level)
 
     for(j in 1:length(hypo_matrices)){
@@ -253,11 +252,3 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999, alpha
    return(output)
 
 }
-
-# medsanova(formula= "eventT ~ treat*prot_groups", event ="dc",
-#           data = data, nperm = 10, alpha = 0.005,var_level = 0.95,
-#           var_method= "onesided",nested.levels.unique = FALSE)
-#
-#
-#
-#  data <- read.csv("C:/Users/stein/Desktop/Quatsch/Testdaten.csv")

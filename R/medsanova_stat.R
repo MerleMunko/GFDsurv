@@ -260,7 +260,7 @@ wrap_sim2 <- function(values, group = values[, 3], t_mat_list, var_method, var_l
 # Vector with the quantiles of the test-statistics and number of permutations
 #
 
-perm_fun <- function(values, nperm, t_mat_list, alpha , var_method, var_level = var_level) {
+perm_fun <- function(values, nperm, t_mat_list , var_method, var_level = var_level) {
 
   C_mat <- function(x){
     t(x) %*% MASS::ginv( x %*% t(x) ) %*% x
@@ -279,12 +279,7 @@ perm_fun <- function(values, nperm, t_mat_list, alpha , var_method, var_level = 
      rownames(test_stat_erg) <- "int_1"
    }
 
-  q <- list()
-  for( i in 1:length(t_mat_list)){
-    q <- unname(quantile(test_stat_erg[paste0("int_", i), ], 1-alpha, na.rm = TRUE))
-    q[[i]] <- c(q)
-    names(q[[i]]) <- paste0("q_int")
-  }
-  return(list(q = q, test_stat_erg = test_stat_erg ) )
+
+  return(list(test_stat_erg = test_stat_erg ) )
 }
 

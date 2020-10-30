@@ -21,7 +21,6 @@
 #'  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.
 #' @param nperm The number of permutations used for calculating the permuted p-value.
 #'   The default option is 1999.
-#' @param alpha A number specifying the significance level; the default is 0.05.
 #' @param nested.levels.unique A logical specifying whether the levels of the nested
 #' factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each
@@ -73,10 +72,9 @@
 #'
 #' @export
 #'
-casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha = 0.05,
+casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
                       cross = TRUE, nested.levels.unique = FALSE, rg = list(c(0,0))){
-  input_list <- list(formula = formula,time = time, data = data, nperm = nperm,
-                     alpha = alpha)
+  input_list <- list(formula = formula,time = time, data = data, nperm = nperm)
   #Zeit und in Formel einbinden
   formula2 <-  paste0(formula,"*",event)
   dat <- model.frame(formula2, data)
@@ -170,10 +168,10 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
     Stat_Erg  <- matrix(unlist(Stat_Erg),length(hypo_matrices),
                         m+1,byrow = TRUE)
     rank_C <- unlist(lapply(hypo_matrices, function(x) qr(x)$rank))
-    #Quantilmatrix
-    q_uncon <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]))
-    q_uncon_c <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]*m))
-    q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
+    # #Quantilmatrix
+    # q_uncon <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]))
+    # q_uncon_c <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]*m))
+    # q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
     #Tabelle der P-Werte
     pvalue_stat <-  round(t(sapply(1:length(hypo_matrices), function(x) c(1-pchisq(Stat_Erg[x,1],df=rank_C[x]*m),
                                                                           1-pchisq(Stat_Erg[x,2:(m+1)],df=rank_C[x])))),3)
@@ -279,9 +277,9 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999, alpha =
                         m+1,byrow = TRUE)
     rank_C <- unlist(lapply(hypo_matrices, function(x) qr(x)$rank))
     #Quantilmatrix
-    q_uncon <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]))
-    q_uncon_c <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]*m))
-    q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
+    # q_uncon <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]))
+    # q_uncon_c <- sapply(1:length(hypo_matrices),function(x) qchisq(1-alpha, df = rank_C[x]*m))
+    # q_uncon <- matrix(c(q_uncon_c,rep(q_uncon,m)),length(hypo_matrices), m+1)
     #Tabelle der P-Werte
     pvalue_stat <-  round(t(sapply(1:length(hypo_matrices), function(x) c(1-pchisq(Stat_Erg[x,1],df=rank_C[x]*m),
                                                           1-pchisq(Stat_Erg[x,2:(m+1)],df=rank_C[x])))),4)
