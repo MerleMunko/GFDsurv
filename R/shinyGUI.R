@@ -73,11 +73,17 @@ GFDsurvGUI <- function() {
 
                           ),
 
-                        splitLayout(cellWidths = c("60%"),
+                        splitLayout(cellWidths = c("60%","10%","30%"),
                           shinyjs::hidden(
                             textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
+                          ),
+                          shinyjs::hidden(
+                            actionButton("infoButton", "", icon = icon("info-circle")),
+                            bsTooltip("infoButton", "The wait times will be broken into this many equally spaced bins",
+                                    "right", options = list(container = "body"))
                           )
                         ),
+
                         splitLayout(cellWidths = c("60%"),
                           shinyjs::hidden(
                             checkboxInput("nested", "Are the levels of nested factors the same for each level main factor?", FALSE)
@@ -159,6 +165,10 @@ GFDsurvGUI <- function() {
                                       )
                           ),
 
+                        shinyjs::hidden(
+                          checkboxInput("plots", "Plot the surival curves", FALSE)
+                        ),
+
                         splitLayout(cellWidths = c("15%","85%"),
                             shinyjs::hidden(
                             numericInput("tau", "Endpoint tau of the relevant time window [0,tau]",NULL)
@@ -180,6 +190,7 @@ GFDsurvGUI <- function() {
                         mainPanel(
 
                           verbatimTextOutput("result"),
+                          plotOutput("result_plot"),
                           width = 4
 
                         )
@@ -206,6 +217,7 @@ GFDsurvGUI <- function() {
              shinyjs::hide(id = "weights1")
              shinyjs::hide(id = "Weights")
              shinyjs::hide(id = "formula")
+             shinyjs::hide(id = "infoButton")
              shinyjs::hide(id = "variante")
              shinyjs::hide(id = "var_level")
              shinyjs::hide(id = "nperm")
@@ -220,13 +232,17 @@ GFDsurvGUI <- function() {
              shinyjs::hide(id = "Platz1")
              shinyjs::hide(id = "Platz2")
              shinyjs::hide(id = "nested")
+             shinyjs::hide(id = "plots")
+
 
 
            }else{
              shinyjs::show(id = "Method")
              shinyjs::show(id = "formula")
+             shinyjs::show(id = "infoButton")
              shinyjs::show(id = "nested")
              shinyjs::show(id = "process")
+             shinyjs::show(id = "plots")
              shinyjs::hide(id = "titleLoadData")
 
 
@@ -446,17 +462,25 @@ GFDsurvGUI <- function() {
             }
             if(length(rg)==0){
               rg = list(c(0,0))
-              }
+            }
+
+            output_cas <- casanova(formula= isolate(input$formula),
+                     event = input$dynamic,
+                     data = isolate(data),
+                     nperm = isolate(input$nperm),
+                     cross = crossing,
+                     nested.levels.unique = isolate(input$nested),
+                     rg = isolate(rg))
 
             output$result <- renderPrint({
-              casanova(formula= isolate(input$formula),
-                       event = input$dynamic,
-                       data = isolate(data),
-                       nperm = isolate(input$nperm),
-                       cross = crossing,
-                       nested.levels.unique = isolate(input$nested),
-                       rg = isolate(rg))
+              output_cas
             })
+
+            if(input$plots){
+                output$result_plot <- renderPlot({
+                  plot(output_cas)
+                })
+              }
             }
 
             if (input$Method == "medSANOVA" ){
@@ -464,15 +488,26 @@ GFDsurvGUI <- function() {
               event <- data[,input$dynamic]
               data[,input$dynamic] <- ifelse(event == input$dynamic2,1,0)
 
-              output$result <- renderPrint({
-                medsanova(formula= isolate(input$formula),
+              output_med <-  medsanova(formula= isolate(input$formula),
                          event = input$dynamic,
                          data = isolate(data),
                          var_method = isolate(input$variante),
                          nperm = isolate(input$nperm),
                          nested.levels.unique = isolate(input$nested)
                          )
+
+              output$result <- renderPrint({
+                output_med
               })
+
+              if(input$plots){
+                output$result_plot <- renderPlot({
+                  plot(output_med)
+                })
+              }
+
+
+
             }
             if (input$Method == "copSANOVA" ){
               data <- as.data.frame(datasetInput())
@@ -505,8 +540,7 @@ GFDsurvGUI <- function() {
 
              }
 
-              output$result <- renderPrint({
-                copsanova(formula= isolate(input$formula),
+              output_cop <- copsanova(formula= isolate(input$formula),
                           event = input$dynamic,
                           data = isolate(data),
                           BSiter = isolate(input$nboot),
@@ -514,7 +548,16 @@ GFDsurvGUI <- function() {
                           tau = isolate(input$tau),
                           nested.levels.unique = isolate(input$nested)
                 )
+
+              output$result <- renderPrint({
+                output_cop
               })
+
+              if(input$plots){
+                output$result_plot <- renderPlot({
+                  plot(output_cop)
+                })
+              }
 
 
             }
