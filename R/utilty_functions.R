@@ -29,6 +29,67 @@ summary.casanova <- function (x, ...) {
 }
 
 
+#' @export
+plot.casanova <- function (x, ...) {
+  plotting <- x$plotting
+  requireNamespace("survival", quietly = TRUE)
+
+  if (!("package:survival" %in% search())) {
+    attachNamespace("survival")
+  }
+  requireNamespace("survminer", quietly = TRUE)
+
+  if (!("package:survminer" %in% search())) {
+    attachNamespace("survminer")
+  }
+  requireNamespace("gridExtra", quietly = TRUE)
+
+  if (!("package:gridExtra" %in% search())) {
+    attachNamespace("gridExtra")
+  }
+
+
+
+  if(length(plotting$nadat2)==1){
+
+    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
+
+    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+               censor = FALSE,
+               ggtheme = theme_bw(),
+               pval = FALSE)
+    return(plot_1)
+
+
+  }
+  if(length(plotting$nadat2)==2){
+
+    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+
+    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                         censor = FALSE,
+                         ggtheme = theme_bw(),
+                         pval = FALSE,
+                        # surv.median.line = "hv",
+                         facet.by = plotting$nadat2[1])
+    plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                        censor = FALSE,
+                        ggtheme = theme_bw(),
+                        pval = FALSE,
+                       # surv.median.line = "hv",
+                        facet.by = plotting$nadat2[2])
+   grid.arrange(plot_1, plot_2, ncol=2)
+
+  }
+
+  if(length(plotting$nadat2)==3){
+    stop("Plots for designs with MORE than two factors not implemented!")
+  }
+}
+
+
+
+
 
 
 #' @export
@@ -45,6 +106,65 @@ summary.medsanova <- function (x, ...) {
   print(x)
 }
 
+
+#' @export
+plot.medsanova  <- function (x, ...) {
+  plotting <- x$plotting
+  requireNamespace("survival", quietly = TRUE)
+
+  if (!("package:survival" %in% search())) {
+    attachNamespace("survival")
+  }
+  requireNamespace("survminer", quietly = TRUE)
+
+  if (!("package:survminer" %in% search())) {
+    attachNamespace("survminer")
+  }
+  requireNamespace("gridExtra", quietly = TRUE)
+
+  if (!("package:gridExtra" %in% search())) {
+    attachNamespace("gridExtra")
+  }
+
+
+
+
+  if(length(plotting$nadat2)==1){
+
+    fit <- eval(parse(text =paste0("survfit(Surv(Var,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
+
+    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                         censor = FALSE,
+                         ggtheme = theme_bw(),
+                         pval = FALSE,
+                         surv.median.line = "hv")
+    return(plot_1)
+
+  }
+  if(length(plotting$nadat2)==2){
+
+    fit <- eval(parse(text =paste0("survfit(Surv(Var,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+
+    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                         censor = FALSE,
+                         ggtheme = theme_bw(),
+                         pval = FALSE,
+                         surv.median.line = "hv",
+                         facet.by = plotting$nadat2[1])
+    plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                         censor = FALSE,
+                         ggtheme = theme_bw(),
+                         pval = FALSE,
+                         surv.median.line = "hv",
+                         facet.by = plotting$nadat2[2])
+    grid.arrange(plot_1, plot_2, ncol=2)
+
+  }
+
+  if(length(plotting$nadat2)==3){
+    stop("Plots for designs with MORE than two factors not implemented!")
+  }
+}
 
 
 #' @export
@@ -64,5 +184,62 @@ summary.copsanova <- function (x, ...) {
   print(x)
 }
 
+#' @export
+plot.copsanova  <- function (x, ...) {
+  plotting <- x$plotting
+  requireNamespace("survival", quietly = TRUE)
 
+  if (!("package:survival" %in% search())) {
+    attachNamespace("survival")
+  }
+  requireNamespace("survminer", quietly = TRUE)
+
+  if (!("package:survminer" %in% search())) {
+    attachNamespace("survminer")
+  }
+  requireNamespace("gridExtra", quietly = TRUE)
+
+  if (!("package:gridExtra" %in% search())) {
+    attachNamespace("gridExtra")
+  }
+
+
+
+
+  if(length(plotting$nadat2)==1){
+
+    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
+
+    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                         censor = FALSE,
+                         ggtheme = theme_bw(),
+                         pval = FALSE)
+    return(plot_1)
+
+
+  }
+  if(length(plotting$nadat2)==2){
+
+    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+
+    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                         censor = FALSE,
+                         ggtheme = theme_bw(),
+                         pval = FALSE,
+                         #surv.median.line = "hv",
+                         facet.by = plotting$nadat2[1])
+    plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                         censor = FALSE,
+                         ggtheme = theme_bw(),
+                         pval = FALSE,
+                         #surv.median.line = "hv",
+                         facet.by = plotting$nadat2[2])
+    grid.arrange(plot_1, plot_2, ncol=2)
+
+  }
+
+  if(length(plotting$nadat2)==3){
+    stop("Plots for designs with MORE than two factors not implemented!")
+  }
+}
 
