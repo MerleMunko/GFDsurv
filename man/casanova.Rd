@@ -9,7 +9,6 @@ casanova(
   event = "event",
   data = NULL,
   nperm = 1999,
-  alpha = 0.05,
   cross = TRUE,
   nested.levels.unique = FALSE,
   rg = list(c(0, 0))
@@ -30,8 +29,6 @@ indicator. Default option is \code{NULL}.}
 
 \item{nperm}{The number of permutations used for calculating the permuted p-value.
 The default option is 1999.}
-
-\item{alpha}{A number specifying the significance level; the default is 0.05.}
 
 \item{cross}{logical. Should the crossing weight w(x) = 1 - 2x be included?
 The default is \code{TRUE}.}

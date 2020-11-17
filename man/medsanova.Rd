@@ -9,7 +9,6 @@ medsanova(
   event = "event",
   data = NULL,
   nperm = 1999,
-  alpha = 0.05,
   var_method = "twosided",
   var_level = 0.9,
   nested.levels.unique = FALSE
@@ -30,8 +29,6 @@ indicator. Default option is \code{NULL}.}
 
 \item{nperm}{The number of permutations used for calculating the permuted p-value.
 The default option is 1999.}
-
-\item{alpha}{A number specifying the significance level; the default is 0.05.}
 
 \item{nested.levels.unique}{A logical specifying whether the levels of the nested
 factor(s) are labeled uniquely or not.
