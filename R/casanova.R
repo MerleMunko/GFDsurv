@@ -69,15 +69,19 @@
 #'
 #' @importFrom stats runif
 #' @importFrom magic adiag
-#'
+#' @import survival
+#' @import survminer
+#' @import gridExtra
 #' @export
 #'
 casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
                       cross = TRUE, nested.levels.unique = FALSE, rg = list(c(0,0))){
-  input_list <- list(formula = formula,time = time, data = data, nperm = nperm)
+  input_list <- list(formula = formula,event = event, data = data, nperm = nperm)
   #Zeit und in Formel einbinden
   formula2 <-  paste0(formula,"*",event)
   dat <- model.frame(formula2, data)
+
+
   #n
   subject <- 1:nrow(dat)
   n_all <- length(subject)
@@ -85,6 +89,10 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
   formula <- as.formula(formula)
   nf <- ncol(dat) - 1 - 1
   nadat <- names(dat)
+
+  if(anyNA(data[,nadat])){
+    stop("Data contains NAs!")
+  }
 
 
   names(dat) <- c("time",nadat[2:(1+nf)],"event")
@@ -158,7 +166,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
     dat2  <- dat2[order(dat2["time"]),]
     event <- dat2[,"event"]
     group <- dat2$group
-
+    print(hypo_matrices)
     results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
 
 
@@ -202,8 +210,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
 
     n <- plyr::ddply(dat2, nadat2, plyr::summarise, Measure = length(subject),
                      .drop = F)$Measure
-    group <- rep(1:length(n),n)
-    dat2$group <- group
+
     if (length(fac_names) != nf && 2 %in% nr_hypo) {
       stop("A model involving both nested and crossed factors is\n           not impemented!")
     }
@@ -261,12 +268,15 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
     if (0 %in% n || 1 %in% n) {
       stop("There is at least one factor-level combination\n           with less than 2 observations!")
     }
-
+    group <- rep(1:length(n),n)
+    dat2$group <- group
+    print(n)
     ###############################
     dat2  <- dat2[order(dat2["time"]),]
     event <- dat2[,"event"]
     group <- dat2$group
 
+    print(hypo_matrices)
     results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
 
 
@@ -305,13 +315,16 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
   output$indep <- indep
   output$rg <- rg
   output$nperm <-nperm
+  output$plotting <- list("dat" = dat,"nadat2" = nadat2)
 
   output$statistic <- cbind(Stat_Erg[,1],df,pvalue_stat[,1],round(pvalue_per[,1],4))
   rownames(output$statistic) <- fac_names
   colnames(output$statistic) <- c("Test statistic","df","p-value", "p-value perm")
 
 
- class(output) <- "casanova"
-  return(output)
+   class(output) <- "casanova"
+    return(output)
+
+
 }
 

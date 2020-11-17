@@ -14,7 +14,6 @@ int_fun <- function(k, event,  n.risk_vec, m, weight_Comb,len_sig, Comb_sig, n.r
 
   delta_sig <- ifelse( n.risk == 0, 0, delta/n.risk)
 
-
   #Kombinieren der verschd. Gewichtsfunktionen W_tilde und W_n
   weight_combined <- apply(weight_Comb,1, function(x) weight_KME[[x[1]]]*n.risk_prod[[x[2]]])
 
@@ -47,7 +46,8 @@ stat <- function(C,group_mat, n, m, event, ngroup, Comb_sig,len_sig, weight_KME,
   out <- sapply(1:ngroup, int_fun, event = event, n.risk_vec = n.risk_vec, m=m, weight_Comb=weight_Comb,len_sig = len_sig,
                 Comb_sig = Comb_sig, n.risk_prod = n.risk_prod, weight_KME  = weight_KME , group_mat = group_mat)
 
-
+  # print(out[1:m,])
+  # print(C)
   ### C ist in Paper Matrix T
   # Erhalte T_z f?r jedes einzelne Z
   T_Z <- apply(out[1:m,],1,function(x) C%*% matrix(x , nrow = ngroup))
