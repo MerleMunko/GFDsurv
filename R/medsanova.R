@@ -53,6 +53,10 @@
 #' @references Ditzhaus, M., Dobler, D. and Pauly, M. (2020).  Inferring median survival
 #' differences in general factorial designs via permutation tests. ArXiv preprint (arxiv:2006.14316).
 #'
+#' @import survival
+#' @import survminer
+#' @import gridExtra
+#'
 #' @export
 #'
 #'
@@ -72,6 +76,11 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999,
   formula <- as.formula(formula)
   nf <- ncol(dat) - 1 - 1
   nadat <- names(dat)
+
+  if(anyNA(data[,nadat])){
+    stop("Data contains NAs!")
+  }
+
   if(var_method == "twosided"){var_method = 2}
   if(var_method == "onesided"){var_method = 3}
 
@@ -80,8 +89,6 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999,
   dat2 <- data.frame(dat, subject = subject)
 
   nadat2 <- nadat[-c(1,nf+2)]
-
-
 
 
   fl <- NA
@@ -244,6 +251,8 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999,
    output <- list()
    output$input <- input_list
    output$nperm <-nperm
+   output$plotting <- list("dat" = dat,"nadat2" = nadat2)
+
 
    output$statistic <- cbind(erg_stat,df,round(out[,2],3),round(out[,1],3))
    rownames(output$statistic) <- fac_names

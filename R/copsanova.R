@@ -70,6 +70,9 @@
 #'  Dobler, D. and Pauly, M. (2020). Factorial analyses of treatment effects
 #'   under independent right-censoring. Statistical Methods in Medical Research 29(2), 325-343.
 #'
+#' @import survival
+#' @import survminer
+#' @import gridExtra
 #'
 #' @export
 #'
@@ -89,6 +92,10 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
   formula <- as.formula(formula)
   nf <- ncol(dat) - 1 - 1
   nadat <- names(dat)
+
+  if(anyNA(data[,nadat])){
+    stop("Data contains NAs!")
+  }
 
   names(dat) <- c("time",nadat[2:(1+nf)],"event")
 
@@ -282,6 +289,8 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
   output$bsiter <- BSiter
   output$weights <- weights
   output$tau <- tau
+  output$plotting <- list("dat" = dat,"nadat2" = nadat2)
+
 
   output$statistic <- cbind(copsanova_erg$test_statistics,round(copsanova_erg$value,4))
   rownames(output$statistic) <- fac_names
