@@ -6,6 +6,8 @@
 #'
 #' @import shiny
 #' @import shinyjs
+#' @import shinyWidgets
+#' @import shinyBS
 #'
 #' @export
 
@@ -18,6 +20,11 @@ GFDsurvGUI <- function() {
   requireNamespace("shinyWidgets", quietly = TRUE)
   if (!("package:shinyWidgets" %in% search())) {
     attachNamespace("shinyWidgets")
+  }
+  requireNamespace("shinyBS", quietly = TRUE)
+
+  if (!("package:shinyBS" %in% search())) {
+    attachNamespace("shinyBS")
   }
 
 
@@ -79,8 +86,8 @@ GFDsurvGUI <- function() {
                           ),
                           shinyjs::hidden(
                             actionButton("infoButton", "", icon = icon("info-circle")),
-                            bsTooltip("infoButton", "The wait times will be broken into this many equally spaced bins",
-                                    "right", options = list(container = "body"))
+                            bsTooltip("infoButton"," - timefactor ~ factorA (1 Factor) <br><br> - timefactor ~ factorA + factorB <br> (2 Factors without interactions) <br> <br>- timefactor ~ factorA + factorB <br> + factorA:factorB <br> (2 Factors with interactions) <br><br>- timefactor ~ factorA * factorB <br>(2 Factors with interactions)"
+                                      , "right", options = list(container = "body"))
                           )
                         ),
 
@@ -478,7 +485,7 @@ GFDsurvGUI <- function() {
 
             if(input$plots){
                 output$result_plot <- renderPlot({
-                  plot(output_cas)
+                  plot(output_cas,  direction = "vertical")
                 })
               }
             }
@@ -502,7 +509,7 @@ GFDsurvGUI <- function() {
 
               if(input$plots){
                 output$result_plot <- renderPlot({
-                  plot(output_med)
+                  plot(output_med, direction = "vertical")
                 })
               }
 
@@ -555,7 +562,7 @@ GFDsurvGUI <- function() {
 
               if(input$plots){
                 output$result_plot <- renderPlot({
-                  plot(output_cop)
+                  plot(output_cop, direction = "vertical")
                 })
               }
 

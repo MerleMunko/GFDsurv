@@ -30,7 +30,7 @@ summary.casanova <- function (x, ...) {
 
 
 #' @export
-plot.casanova <- function (x, ...) {
+plot.casanova <- function (x, direction = "horizontal") {
   plotting <- x$plotting
   requireNamespace("survival", quietly = TRUE)
 
@@ -56,7 +56,7 @@ plot.casanova <- function (x, ...) {
 
     plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                censor = FALSE,
-               ggtheme = theme_bw(),
+               #ggtheme = theme_bw(),
                pval = FALSE)
     return(plot_1)
 
@@ -68,18 +68,22 @@ plot.casanova <- function (x, ...) {
 
     plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
-                         ggtheme = theme_bw(),
+                         #ggtheme = theme_bw(),
                          pval = FALSE,
                         # surv.median.line = "hv",
                          facet.by = plotting$nadat2[1])
     plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                         censor = FALSE,
-                        ggtheme = theme_bw(),
+                        #ggtheme = theme_bw(),
                         pval = FALSE,
                        # surv.median.line = "hv",
                         facet.by = plotting$nadat2[2])
-   grid.arrange(plot_1, plot_2, ncol=2)
-
+    if(direction == "horizontal"){
+      grid.arrange(plot_1, plot_2, ncol=2)
+    }
+    if(direction == "vertical"){
+      grid.arrange(plot_1, plot_2, ncol=1)
+    }
   }
 
   if(length(plotting$nadat2)==3){
@@ -108,7 +112,7 @@ summary.medsanova <- function (x, ...) {
 
 
 #' @export
-plot.medsanova  <- function (x, ...) {
+plot.medsanova  <- function (x, direction = "horizontal") {
   plotting <- x$plotting
   requireNamespace("survival", quietly = TRUE)
 
@@ -135,7 +139,7 @@ plot.medsanova  <- function (x, ...) {
 
     plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
-                         ggtheme = theme_bw(),
+                         #ggtheme = theme_bw(),
                          pval = FALSE,
                          surv.median.line = "hv")
     return(plot_1)
@@ -147,17 +151,22 @@ plot.medsanova  <- function (x, ...) {
 
     plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
-                         ggtheme = theme_bw(),
+                         #ggtheme = theme_bw(),
                          pval = FALSE,
                          surv.median.line = "hv",
                          facet.by = plotting$nadat2[1])
     plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
-                         ggtheme = theme_bw(),
+                         #ggtheme = theme_bw(),
                          pval = FALSE,
                          surv.median.line = "hv",
                          facet.by = plotting$nadat2[2])
-    grid.arrange(plot_1, plot_2, ncol=2)
+    if(direction == "horizontal"){
+      grid.arrange(plot_1, plot_2, ncol=2)
+    }
+    if(direction == "vertical"){
+      grid.arrange(plot_1, plot_2, ncol=1)
+    }
 
   }
 
@@ -185,7 +194,7 @@ summary.copsanova <- function (x, ...) {
 }
 
 #' @export
-plot.copsanova  <- function (x, ...) {
+plot.copsanova  <- function (x, direction = "horizontal") {
   plotting <- x$plotting
   requireNamespace("survival", quietly = TRUE)
 
@@ -212,7 +221,7 @@ plot.copsanova  <- function (x, ...) {
 
     plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
-                         ggtheme = theme_bw(),
+                         #ggtheme = theme_bw(),
                          pval = FALSE)
     return(plot_1)
 
@@ -224,17 +233,22 @@ plot.copsanova  <- function (x, ...) {
 
     plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
-                         ggtheme = theme_bw(),
+                         #ggtheme = theme_bw(),
                          pval = FALSE,
                          #surv.median.line = "hv",
                          facet.by = plotting$nadat2[1])
     plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
-                         ggtheme = theme_bw(),
+                         #ggtheme = theme_bw(),
                          pval = FALSE,
                          #surv.median.line = "hv",
                          facet.by = plotting$nadat2[2])
-    grid.arrange(plot_1, plot_2, ncol=2)
+    if(direction == "horizontal"){
+      grid.arrange(plot_1, plot_2, ncol=2)
+    }
+    if(direction == "vertical"){
+      grid.arrange(plot_1, plot_2, ncol=1)
+    }
 
   }
 
