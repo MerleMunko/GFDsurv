@@ -7,7 +7,7 @@
 #' @import shiny
 #' @import shinyjs
 #' @import shinyWidgets
-#' @import shinyBS
+#' @import tippy
 #'
 #' @export
 
@@ -21,10 +21,10 @@ GFDsurvGUI <- function() {
   if (!("package:shinyWidgets" %in% search())) {
     attachNamespace("shinyWidgets")
   }
-  requireNamespace("shinyBS", quietly = TRUE)
+  requireNamespace("tippy", quietly = TRUE)
 
-  if (!("package:shinyBS" %in% search())) {
-    attachNamespace("shinyBS")
+  if (!("package:tippy" %in% search())) {
+    attachNamespace("tippy")
   }
 
 
@@ -86,10 +86,11 @@ GFDsurvGUI <- function() {
                             textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
                           ),
                           shinyjs::hidden(
-                            actionButton("infoButton", "", icon = icon("info-circle")),
-                            bsTooltip("infoButton"," - 1 Factor: <br>  timefactor ~ factorA <br><br> - 2 Factors without interactions: <br> timefactor ~ factorA + factorB <br>  <br>- 2 Factors with interactions: <br> timefactor ~ factorA + factorB + factorA:factorB <br><br>- 2 Factors with interactions: <br> timefactor ~ factorA * factorB "
-                                      , "right",options=list(container="body"))
-                          )
+                            actionButton("infoButton", "", icon = icon("info-circle"))
+                          ),
+
+                            tippy_this("infoButton", " - 1 Factor: <br>  timefactor ~ factorA <br><br> - 2 Factors without interactions: <br> timefactor ~ factorA + factorB <br>  <br>- 2 Factors with interactions: <br> timefactor ~ factorA + factorB + factorA:factorB <br><br>- 2 Factors with interactions: <br> timefactor ~ factorA * factorB "
+                                       , placement = "right")
                         ),
 
                         splitLayout(cellWidths = c("60%"),
@@ -174,7 +175,7 @@ GFDsurvGUI <- function() {
                           ),
 
                         shinyjs::hidden(
-                          checkboxInput("plots", "Plot the surival curves", FALSE)
+                          checkboxInput("plots", "Plot the surival curves", TRUE)
                         ),
 
                         splitLayout(cellWidths = c("15%","85%"),

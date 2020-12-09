@@ -166,7 +166,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
     dat2  <- dat2[order(dat2["time"]),]
     event <- dat2[,"event"]
     group <- dat2$group
-    print(hypo_matrices)
+    #print(hypo_matrices)
     results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
 
 
@@ -270,13 +270,13 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
     }
     group <- rep(1:length(n),n)
     dat2$group <- group
-    print(n)
+    #print(n)
     ###############################
     dat2  <- dat2[order(dat2["time"]),]
     event <- dat2[,"event"]
     group <- dat2$group
 
-    print(hypo_matrices)
+    #print(hypo_matrices)
     results <- stat_factorial(hypo_matrices,group, event,n, n_all, w, nperm)
 
 
