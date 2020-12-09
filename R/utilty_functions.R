@@ -30,7 +30,7 @@ summary.casanova <- function (x, ...) {
 
 
 #' @export
-plot.casanova <- function (x, direction = "horizontal") {
+plot.casanova <- function (x, direction = "horizontal", by.group = FALSE, nr.group = FALSE,...) {
   plotting <- x$plotting
   requireNamespace("survival", quietly = TRUE)
 
@@ -52,9 +52,9 @@ plot.casanova <- function (x, direction = "horizontal") {
 
   if(length(plotting$nadat2)==1){
 
-    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
+    fit <- eval(parse(text =paste0("survival::survfit(Surv(time,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
 
-    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+    plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
                censor = FALSE,
                #ggtheme = theme_bw(),
                pval = FALSE)
@@ -64,25 +64,40 @@ plot.casanova <- function (x, direction = "horizontal") {
   }
   if(length(plotting$nadat2)==2){
 
-    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+    if(by.group  ==  FALSE){
 
-    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
-                         censor = FALSE,
-                         #ggtheme = theme_bw(),
-                         pval = FALSE,
-                        # surv.median.line = "hv",
-                         facet.by = plotting$nadat2[1])
-    plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
-                        censor = FALSE,
-                        #ggtheme = theme_bw(),
-                        pval = FALSE,
-                       # surv.median.line = "hv",
-                        facet.by = plotting$nadat2[2])
-    if(direction == "horizontal"){
-      grid.arrange(plot_1, plot_2, ncol=2)
+      fit <- eval(parse(text =paste0("survival::survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+
+      plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                           censor = FALSE,
+                           #ggtheme = theme_bw(),
+                           pval = FALSE,
+                          # surv.median.line = "hv",
+                           facet.by = plotting$nadat2[1])
+      plot_2 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                          censor = FALSE,
+                          #ggtheme = theme_bw(),
+                          pval = FALSE,
+                         # surv.median.line = "hv",
+                          facet.by = plotting$nadat2[2])
+      if(direction == "horizontal"){
+       gridExtra::grid.arrange(plot_1, plot_2, ncol=2)
+      }
+      if(direction == "vertical"){
+       gridExtra::grid.arrange(plot_1, plot_2, ncol=1)
+      }
     }
-    if(direction == "vertical"){
-      grid.arrange(plot_1, plot_2, ncol=1)
+    if(by.group == TRUE){
+
+      fit <- eval(parse(text =paste0("survival::survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+
+      plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                                      censor = FALSE,
+                                      #ggtheme = theme_bw(),
+                                      pval = FALSE,
+                                      # surv.median.line = "hv",
+                                      facet.by = plotting$nadat2[nr.group])
+      return(plot_1)
     }
   }
 
@@ -112,7 +127,7 @@ summary.medsanova <- function (x, ...) {
 
 
 #' @export
-plot.medsanova  <- function (x, direction = "horizontal") {
+plot.medsanova  <- function (x, direction = "horizontal", by.group = FALSE, nr.group = FALSE,...) {
   plotting <- x$plotting
   requireNamespace("survival", quietly = TRUE)
 
@@ -135,9 +150,9 @@ plot.medsanova  <- function (x, direction = "horizontal") {
 
   if(length(plotting$nadat2)==1){
 
-    fit <- eval(parse(text =paste0("survfit(Surv(Var,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
+    fit <- eval(parse(text =paste0("survival::survfit(Surv(Var,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
 
-    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+    plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
                          #ggtheme = theme_bw(),
                          pval = FALSE,
@@ -145,28 +160,44 @@ plot.medsanova  <- function (x, direction = "horizontal") {
     return(plot_1)
 
   }
+
   if(length(plotting$nadat2)==2){
+    if(by.group  ==  FALSE){
 
-    fit <- eval(parse(text =paste0("survfit(Surv(Var,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+      fit <- eval(parse(text =paste0("survival::survfit(Surv(Var,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
 
-    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
-                         censor = FALSE,
-                         #ggtheme = theme_bw(),
-                         pval = FALSE,
-                         surv.median.line = "hv",
-                         facet.by = plotting$nadat2[1])
-    plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
-                         censor = FALSE,
-                         #ggtheme = theme_bw(),
-                         pval = FALSE,
-                         surv.median.line = "hv",
-                         facet.by = plotting$nadat2[2])
-    if(direction == "horizontal"){
-      grid.arrange(plot_1, plot_2, ncol=2)
+      plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                                      censor = FALSE,
+                                      #ggtheme = theme_bw(),
+                                      pval = FALSE,
+                                      surv.median.line = "hv",
+                                      facet.by = plotting$nadat2[1])
+      plot_2 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                                      censor = FALSE,
+                                      #ggtheme = theme_bw(),
+                                      pval = FALSE,
+                                      surv.median.line = "hv",
+                                      facet.by = plotting$nadat2[2])
+      if(direction == "horizontal"){
+        gridExtra::grid.arrange(plot_1, plot_2, ncol=2)
+      }
+      if(direction == "vertical"){
+        gridExtra::grid.arrange(plot_1, plot_2, ncol=1)
+      }
     }
-    if(direction == "vertical"){
-      grid.arrange(plot_1, plot_2, ncol=1)
+    if(by.group == TRUE){
+
+      fit <- eval(parse(text =paste0("survival::survfit(Surv(Var,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+
+      plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                                      censor = FALSE,
+                                      #ggtheme = theme_bw(),
+                                      pval = FALSE,
+                                      surv.median.line = "hv",
+                                      facet.by = plotting$nadat2[nr.group])
+      return(plot_1)
     }
+
 
   }
 
@@ -194,7 +225,7 @@ summary.copsanova <- function (x, ...) {
 }
 
 #' @export
-plot.copsanova  <- function (x, direction = "horizontal") {
+plot.copsanova  <- function (x, direction = "horizontal", by.group = FALSE, nr.group = FALSE,...) {
   plotting <- x$plotting
   requireNamespace("survival", quietly = TRUE)
 
@@ -217,9 +248,9 @@ plot.copsanova  <- function (x, direction = "horizontal") {
 
   if(length(plotting$nadat2)==1){
 
-    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
+    fit <- eval(parse(text =paste0("survival::survfit(Surv(time,event) ~ ",plotting$nadat2[1],", data = plotting$dat)")))
 
-    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
+    plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
                          censor = FALSE,
                          #ggtheme = theme_bw(),
                          pval = FALSE)
@@ -229,27 +260,41 @@ plot.copsanova  <- function (x, direction = "horizontal") {
   }
   if(length(plotting$nadat2)==2){
 
-    fit <- eval(parse(text =paste0("survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+    if(by.group  ==  FALSE){
 
-    plot_1 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
-                         censor = FALSE,
-                         #ggtheme = theme_bw(),
-                         pval = FALSE,
-                         #surv.median.line = "hv",
-                         facet.by = plotting$nadat2[1])
-    plot_2 <- ggsurvplot(fit, data = plotting$dat, fun = "pct",
-                         censor = FALSE,
-                         #ggtheme = theme_bw(),
-                         pval = FALSE,
-                         #surv.median.line = "hv",
-                         facet.by = plotting$nadat2[2])
-    if(direction == "horizontal"){
-      grid.arrange(plot_1, plot_2, ncol=2)
-    }
-    if(direction == "vertical"){
-      grid.arrange(plot_1, plot_2, ncol=1)
-    }
+      fit <- eval(parse(text =paste0("survival::survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
 
+      plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                                      censor = FALSE,
+                                      #ggtheme = theme_bw(),
+                                      pval = FALSE,
+                                      # surv.median.line = "hv",
+                                      facet.by = plotting$nadat2[1])
+      plot_2 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                                      censor = FALSE,
+                                      #ggtheme = theme_bw(),
+                                      pval = FALSE,
+                                      # surv.median.line = "hv",
+                                      facet.by = plotting$nadat2[2])
+      if(direction == "horizontal"){
+        gridExtra::grid.arrange(plot_1, plot_2, ncol=2)
+      }
+      if(direction == "vertical"){
+        gridExtra::grid.arrange(plot_1, plot_2, ncol=1)
+      }
+    }
+    if(by.group == TRUE){
+
+      fit <- eval(parse(text =paste0("survival::survfit(Surv(time,event) ~ ",plotting$nadat2[1]," + ",plotting$nadat2[2],", data = plotting$dat)")))
+
+      plot_1 <- survminer::ggsurvplot(fit, data = plotting$dat, fun = "pct",
+                                      censor = FALSE,
+                                      #ggtheme = theme_bw(),
+                                      pval = FALSE,
+                                      # surv.median.line = "hv",
+                                      facet.by = plotting$nadat2[nr.group])
+      return(plot_1)
+    }
   }
 
   if(length(plotting$nadat2)==3){

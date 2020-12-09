@@ -65,6 +65,7 @@ GFDsurvGUI <- function() {
                         }
                         ")),
 
+
                         h3(id="titleLoadData","Load dataset first!", style = "color:red"),
 
                         shinyjs::hidden(
@@ -80,14 +81,14 @@ GFDsurvGUI <- function() {
 
                           ),
 
-                        splitLayout(cellWidths = c("60%","10%","30%"),
+                        splitLayout(cellWidths = c("50%","5%","45%"),
                           shinyjs::hidden(
                             textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
                           ),
                           shinyjs::hidden(
                             actionButton("infoButton", "", icon = icon("info-circle")),
-                            bsTooltip("infoButton"," - timefactor ~ factorA (1 Factor) <br><br> - timefactor ~ factorA + factorB <br> (2 Factors without interactions) <br> <br>- timefactor ~ factorA + factorB <br> + factorA:factorB <br> (2 Factors with interactions) <br><br>- timefactor ~ factorA * factorB <br>(2 Factors with interactions)"
-                                      , "right", options = list(container = "body"))
+                            bsTooltip("infoButton"," - 1 Factor: <br>  timefactor ~ factorA <br><br> - 2 Factors without interactions: <br> timefactor ~ factorA + factorB <br>  <br>- 2 Factors with interactions: <br> timefactor ~ factorA + factorB + factorA:factorB <br><br>- 2 Factors with interactions: <br> timefactor ~ factorA * factorB "
+                                      , "right",options=list(container="body"))
                           )
                         ),
 
@@ -188,7 +189,7 @@ GFDsurvGUI <- function() {
                         shinyjs::hidden(
                           actionButton("process", "Calculate", class = "btn-primary")
                         )
-                        , width = 8
+                        , width = 6
                         ),
 
 
@@ -198,7 +199,8 @@ GFDsurvGUI <- function() {
 
                           verbatimTextOutput("result"),
                           plotOutput("result_plot"),
-                          width = 4
+                          plotOutput("result_plot2"),
+                          width = 6
 
                         )
                       )
@@ -484,9 +486,21 @@ GFDsurvGUI <- function() {
             })
 
             if(input$plots){
-                output$result_plot <- renderPlot({
-                  plot(output_cas,  direction = "vertical")
-                })
+                if(length(all.vars(as.formula(input$formula)[[3]]))!=2){
+                  output$result_plot <- renderPlot({
+                    plot(output_cas,  direction = "vertical")
+                  })
+                  output$result_plot2 <- renderPlot({
+
+                  })
+                } else{
+                  output$result_plot <- renderPlot({
+                    plot(output_cas, by.group = TRUE, nr.group = 1)
+                  })
+                  output$result_plot2 <- renderPlot({
+                    plot(output_cas,  by.group = TRUE, nr.group = 2)
+                  })
+                }
               }
             }
 
@@ -508,9 +522,21 @@ GFDsurvGUI <- function() {
               })
 
               if(input$plots){
-                output$result_plot <- renderPlot({
-                  plot(output_med, direction = "vertical")
-                })
+                if(length(all.vars(as.formula(input$formula)[[3]]))!=2){
+                  output$result_plot <- renderPlot({
+                    plot(output_med,  direction = "vertical")
+                  })
+                  output$result_plot2 <- renderPlot({
+
+                  })
+                } else{
+                  output$result_plot <- renderPlot({
+                    plot(output_med, by.group = TRUE, nr.group = 1)
+                  })
+                  output$result_plot2 <- renderPlot({
+                    plot(output_med,  by.group = TRUE, nr.group = 2)
+                  })
+                }
               }
 
 
@@ -561,9 +587,21 @@ GFDsurvGUI <- function() {
               })
 
               if(input$plots){
-                output$result_plot <- renderPlot({
-                  plot(output_cop, direction = "vertical")
-                })
+                if(length(all.vars(as.formula(input$formula)[[3]]))!=2){
+                  output$result_plot <- renderPlot({
+                    plot(output_cop,  direction = "vertical")
+                  })
+                  output$result_plot2 <- renderPlot({
+
+                  })
+                } else{
+                  output$result_plot <- renderPlot({
+                    plot(output_cop, by.group = TRUE, nr.group = 1)
+                  })
+                  output$result_plot2 <- renderPlot({
+                    plot(output_cop,  by.group = TRUE, nr.group = 2)
+                  })
+                }
               }
 
 
