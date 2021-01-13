@@ -72,6 +72,7 @@
 #' @import survival
 #' @import survminer
 #' @import gridExtra
+#' @import GFD
 #' @export
 #'
 casanova <- function(formula, event ="event", data = NULL, nperm = 1999,

@@ -56,6 +56,7 @@
 #' @import survival
 #' @import survminer
 #' @import gridExtra
+#' @import GFD
 #'
 #' @export
 #'
