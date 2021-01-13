@@ -2,10 +2,11 @@
 % Please edit documentation in R/shinyGUI.R
 \name{GFDsurvGUI}
 \alias{GFDsurvGUI}
-\title{A graphical user interface for the package GFDsurv}
+\title{A shiny app for the package GFDsurv}
 \usage{
 GFDsurvGUI()
 }
 \description{
-A graphical user interface for the package GFDsurv
+This function provides a shiny app for calculating
+CASANOVA, medSANOVA and copSANOVA test statistics and respective p-values.
 }
