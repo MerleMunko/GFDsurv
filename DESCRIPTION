@@ -7,6 +7,17 @@ URL: http://github.com/PhilipSteinhauer/GFDsurv
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: GFDsurv
 License: What license is it under?
+Imports: 
+  gridExtra,
+  shiny,
+  shinyWidgets,
+  shinyjs,
+  survival,
+  survminer,
+  tippy,
+  magic,
+  GFD,
+  stats
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.1.1
