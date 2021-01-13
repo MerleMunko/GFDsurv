@@ -1,4 +1,9 @@
-#' A graphical user interface for the package GFDsurv
+#' A shiny app for the package GFDsurv
+#'
+#' This function provides a shiny app for calculating
+#' CASANOVA, medSANOVA and copSANOVA test statistics and respective p-values.
+#'
+#'
 #'
 #'
 #' @aliases GFDsurvGUI
@@ -83,13 +88,21 @@ GFDsurvGUI <- function() {
 
                         splitLayout(cellWidths = c("50%","5%","45%"),
                           shinyjs::hidden(
-                            textInput("formula", "Formula ", "timeFactor ~ FactorA*FactorB")
+                            textInput("formula", "Formula ", "timeFactor ~ FactorA * FactorB")
                           ),
                           shinyjs::hidden(
                             actionButton("infoButton", "", icon = icon("info-circle"))
                           ),
 
-                            tippy_this("infoButton", " - 1 Factor: <br>  timefactor ~ factorA <br><br> - 2 Factors without interactions: <br> timefactor ~ factorA + factorB <br>  <br>- 2 Factors with interactions: <br> timefactor ~ factorA + factorB + factorA:factorB <br><br>- 2 Factors with interactions: <br> timefactor ~ factorA * factorB "
+                            tippy::tippy_this("infoButton", "Interaction effects need to be specified! Example:<br><br>
+                                              - 1 Factor: <br>
+                                              timefactor ~ factorA <br><br>
+                                              - 2 Factors without interactions:
+                                              <br> timefactor ~ factorA + factorB
+                                              <br>  <br>- 2 Factors with interactions:
+                                              <br> timefactor ~ factorA + factorB + factorA:factorB
+                                              <br> or
+                                              <br> timefactor ~ factorA * factorB "
                                        , placement = "right")
                         ),
 
@@ -359,7 +372,7 @@ GFDsurvGUI <- function() {
            # one is equal to `A` only
            if (input$Method == "casanova" || input$Method == "medSANOVA"|| input$Method == "copSANOVA") {
              selectInput(inputId = 'dynamic',
-                         label = "Name of event",
+                         label = "Name of event variable",
                          choices = colnames(datasetInput()))
            } else {
              return(NULL)
@@ -424,9 +437,7 @@ GFDsurvGUI <- function() {
          )
 
 
-
          observeEvent(input$process, {
-
 
           if (input$formula == "timeFactor ~ FactorA*FactorB") {
 
@@ -474,6 +485,7 @@ GFDsurvGUI <- function() {
               rg = list(c(0,0))
             }
 
+            showModal(modalDialog("Calculating!"))
             output_cas <- casanova(formula= isolate(input$formula),
                      event = input$dynamic,
                      data = isolate(data),
@@ -481,10 +493,12 @@ GFDsurvGUI <- function() {
                      cross = crossing,
                      nested.levels.unique = isolate(input$nested),
                      rg = isolate(rg))
+            removeModal()
 
             output$result <- renderPrint({
               output_cas
             })
+
 
             if(input$plots){
                 if(length(all.vars(as.formula(input$formula)[[3]]))!=2){
@@ -506,9 +520,12 @@ GFDsurvGUI <- function() {
             }
 
             if (input$Method == "medSANOVA" ){
+
               data <- as.data.frame(datasetInput())
               event <- data[,input$dynamic]
               data[,input$dynamic] <- ifelse(event == input$dynamic2,1,0)
+
+              showModal(modalDialog("Calculating!"))
 
               output_med <-  medsanova(formula= isolate(input$formula),
                          event = input$dynamic,
@@ -517,6 +534,7 @@ GFDsurvGUI <- function() {
                          nperm = isolate(input$nperm),
                          nested.levels.unique = isolate(input$nested)
                          )
+              removeModal()
 
               output$result <- renderPrint({
                 output_med
@@ -573,6 +591,7 @@ GFDsurvGUI <- function() {
                }
 
              }
+              showModal(modalDialog("Calculating!"))
 
               output_cop <- copsanova(formula= isolate(input$formula),
                           event = input$dynamic,
@@ -582,6 +601,7 @@ GFDsurvGUI <- function() {
                           tau = isolate(input$tau),
                           nested.levels.unique = isolate(input$nested)
                 )
+              removeModal()
 
               output$result <- renderPrint({
                 output_cop
