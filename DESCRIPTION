@@ -2,24 +2,27 @@ Package: GFDsurv
 Type: Package
 Title: GFDsurv
 Version: 0.1.0
-Author: Who wrote it
+Author: Marc Ditzhaus, Dennis Dobler, Markus Pauly, Philipp Steinhauer
 URL: http://github.com/PhilipSteinhauer/GFDsurv
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: GFDsurv
+Maintainer: Marc Ditzhaus <marc.ditzhaus@tu-dortmund.de> , Philipp Steinhauer <philipp.steinhauer@tu-dortmund.de>
+Description: Tests for Survival Data in General Factorial Designs
 License: What license is it under?
 Imports: 
-  gridExtra,
-  shiny,
-  shinyWidgets,
-  shinyjs,
-  survival,
-  survminer,
-  tippy,
-  magic,
-  GFD,
+  gridExtra (>= 2.3),
+  shiny (>= 1.5.0),
+  shinyWidgets (>= 0.5.4),
+  shinyjs (>= 2.0.0),
+  shinythemes (>= 1.1.2),
+  survival (>= 3.2-7),
+  survminer (>= 0.4.8),
+  tippy (>= 0.1.0),
+  magic (>= 1.5-9),
+  MASS (>= 7.3-53),
+  plyr (>= 1.8.6),
+  GFD (>= 0.2.9),
   stats
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.1.1
 Suggests: 
-    testthat
+    condSURV

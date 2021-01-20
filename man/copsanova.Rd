@@ -29,6 +29,8 @@ The default choice is "event"}
 and the censoring status
 indicator. Default option is \code{NULL}.}
 
+\item{BSiter}{The number of bootstrap iterations; the default is 1999.}
+
 \item{weights}{Character to specify the multiplier bootstrap approach. Either a
 wild bootstrap
 with centred Poisson ("pois", default) or standard normal ("norm") weights, or the
@@ -45,8 +47,6 @@ chosen.}
 factor(s) are labeled uniquely or not.
  Default is FALSE, i.e., the levels of the nested factor are the same for each
  level of the main factor.}
-
-\item{Bsiter}{The number of bootstrap iterations; the default is 1999.}
 }
 \value{
 An  \code{copsanova} object containing the following components:
