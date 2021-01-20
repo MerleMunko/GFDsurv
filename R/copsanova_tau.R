@@ -123,12 +123,12 @@ copsanova_tau <- function(formula, event ="event", data = NULL,
           fl[2] <- fl[2]/fl[1]
         }
       }
-      hypo_matrices <- GFD:::HN(fl)
+      hypo_matrices <- HN(fl)
     }
     else {
       TYPE <- "crossed"
-      hypo_matrices <- GFD:::HC(fl, perm_names, fac_names)[[1]]
-      fac_names <- GFD:::HC(fl, perm_names, fac_names)[[2]]
+      hypo_matrices <- HC(fl, perm_names, fac_names)[[1]]
+      fac_names <- HC(fl, perm_names, fac_names)[[2]]
     }
     if (length(fac_names) != length(hypo_matrices)) {
       stop("Something is wrong: Perhaps a missing interaction term in formula?")
