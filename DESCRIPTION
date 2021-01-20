@@ -22,7 +22,6 @@ Imports:
   magic (>= 1.5-9),
   MASS (>= 7.3-53),
   plyr (>= 1.8.6),
-  GFD (>= 0.2.9),
   stats
 Encoding: UTF-8
 LazyData: TRUE
