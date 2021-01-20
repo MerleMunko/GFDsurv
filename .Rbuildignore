@@ -1,0 +1,6 @@
+<<<<<<< Updated upstream
+=======
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+>>>>>>> Stashed changes
