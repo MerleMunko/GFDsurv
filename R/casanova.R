@@ -69,10 +69,12 @@
 #'
 #' @importFrom stats runif
 #' @importFrom magic adiag
-#' @import survival
-#' @import survminer
-#' @import gridExtra
+#' @importFrom  MASS ginv
+#' @importFrom survival survfit
+#' @importFrom survminer ggsurvplot
+#' @importFrom gridExtra grid.arrange
 #' @import GFD
+
 #' @export
 #'
 casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
@@ -100,7 +102,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
 
   dat2 <- data.frame(dat, subject = subject)
 
-  ###Daten richtig ordnen und dann nochmal schauen
+  ###Daten richtig ordnen
 
   nadat2 <- nadat[-c(1,nf+2)]
   dat2[,"time"] <- dat2[,"time"]  + runif(length(dat2[,"time"])) * 10^-7

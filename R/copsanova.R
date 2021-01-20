@@ -16,7 +16,7 @@
 #' @param data A data.frame, list or environment containing the variables in formula
 #' and the censoring status
 #' indicator. Default option is \code{NULL}.
-#' @param Bsiter The number of bootstrap iterations; the default is 1999.
+#' @param BSiter The number of bootstrap iterations; the default is 1999.
 #' @param weights Character to specify the multiplier bootstrap approach. Either a
 #' wild bootstrap
 #' with centred Poisson ("pois", default) or standard normal ("norm") weights, or the
@@ -70,10 +70,10 @@
 #'  Dobler, D. and Pauly, M. (2020). Factorial analyses of treatment effects
 #'   under independent right-censoring. Statistical Methods in Medical Research 29(2), 325-343.
 #'
-#' @import survival
-#' @import survminer
-#' @import gridExtra
-#' @import GFD
+#' @importFrom survival survfit
+#' @importFrom survminer ggsurvplot
+#' @importFrom gridExtra grid.arrange
+#'
 #' @export
 #'
 

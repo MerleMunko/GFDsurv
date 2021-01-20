@@ -18,10 +18,10 @@
 #' factor(s) are labeled uniquely or not.
 #'  Default is FALSE, i.e., the levels of the nested factor are the same for each
 #'  level of the main factor.
-#'  @param  var_method Method for the variance estimation of the sample medians. The default
+#'  @param var_method Method for the variance estimation of the sample medians. The default
 #'  is the "one-sided" confidence interval approach. Additionally, the "two-sided" confidence
 #'  interval approach can be used.
-#'  @param  var_level A number between 0 and 1 specifying the confidence level for the
+#'  @param var_level A number between 0 and 1 specifying the confidence level for the
 #'  variance estimation method; the default value is 0.9.
 #'
 #' @details
@@ -53,11 +53,11 @@
 #' @references Ditzhaus, M., Dobler, D. and Pauly, M. (2020).  Inferring median survival
 #' differences in general factorial designs via permutation tests. ArXiv preprint (arxiv:2006.14316).
 #'
-#' @import survival
-#' @import survminer
-#' @import gridExtra
-#' @import GFD
-#'
+#' @importFrom  MASS ginv
+#' @importFrom survival survfit
+#' @importFrom survminer ggsurvplot
+#' @importFrom gridExtra grid.arrange
+#' @import plyr
 #' @export
 #'
 #'

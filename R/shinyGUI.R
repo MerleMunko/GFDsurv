@@ -11,8 +11,9 @@
 #'
 #' @import shiny
 #' @import shinyjs
-#' @import shinyWidgets
-#' @import tippy
+#' @importFrom shinyWidgets sliderTextInput
+#' @importFrom tippy tippy_this
+#' @importFrom shinythemes shinytheme
 #'
 #' @export
 
