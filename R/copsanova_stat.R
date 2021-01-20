@@ -192,7 +192,7 @@ DDMB_Weights <- function(n, ntime, Gewichte, at.risk, n.ev){
     }else{ if( Gewichte == "norm" ){
       G <- sapply(n.ev[[j]], function(k) c(sum(z <- rnorm(k)), sum(z^2)))
     }else{ if( Gewichte == "rade" ){
-      G <- sapply(n.ev[[j]], function(k) c(sum(z <- 2*rbinom(k, 1, p=0.5) - 1), sum(z^2)))
+      G <- sapply(n.ev[[j]], function(k) c(sum(z <- 2*rbinom(k, 1, prob=0.5) - 1), sum(z^2)))
     }else{
       at.risk.tmp <- sapply(at.risk[[j]], max, 1)
       G <- sapply(n.ev[[j]], function(k) c(sum(z <- rbinom(n = k, size = at.risk[[j]], prob = 1/at.risk[[j]]) - 1), sum(z^2)))
