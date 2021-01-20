@@ -1,6 +1,15 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 =======
 >>>>>>> 31b2c21cb50c081957707055c3ff0ae8c75e5f0f
+=======
+<<<<<<< Updated upstream
+=======
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+>>>>>>> Stashed changes
+>>>>>>> a92774bcebb87f9d96db2e44728318f95cb349a1
