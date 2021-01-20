@@ -68,7 +68,7 @@
 #'
 #' @references
 #'  Dobler, D. and Pauly, M. (2020). Factorial analyses of treatment effects
-#'   under independent right-censoring. Statistical Methods in Medical Research 29(2), 325-343.
+#'  under independent right-censoring. Statistical Methods in Medical Research 29(2), 325-343. doi:10.1177/0962280219831316.
 #'
 #' @importFrom survival survfit
 #' @importFrom survminer ggsurvplot
@@ -222,12 +222,12 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
           fl[2] <- fl[2]/fl[1]
         }
       }
-      hypo_matrices <- GFD:::HN(fl)
+      hypo_matrices <- HN(fl)
     }
     else {
       TYPE <- "crossed"
-      hypo_matrices <- GFD:::HC(fl, perm_names, fac_names)[[1]]
-      fac_names <- GFD:::HC(fl, perm_names, fac_names)[[2]]
+      hypo_matrices <- HC(fl, perm_names, fac_names)[[1]]
+      fac_names <- HC(fl, perm_names, fac_names)[[2]]
     }
     if (length(fac_names) != length(hypo_matrices)) {
       stop("Something is wrong: Perhaps a missing interaction term in formula?")
@@ -301,11 +301,3 @@ copsanova <- function(formula, event ="event", data = NULL, BSiter = 1999,
 
 
 }
-
-# set.seed(1)
-  # data <- read.csv("C:/Users/stein/Desktop/Quatsch/cop_data_test.csv")
-  #
-  # copsanova("exit ~ sex", "to", data = data, BSiter = 9,
-  #                        weights = "pois", nested.levels.unique = FALSE)
-  #
-

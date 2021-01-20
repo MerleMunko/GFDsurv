@@ -50,8 +50,9 @@
 #' ## Detailed informations:
 #' summary(out)
 #'
-#' @references Ditzhaus, M., Dobler, D. and Pauly, M. (2020).  Inferring median survival
-#' differences in general factorial designs via permutation tests. ArXiv preprint (arxiv:2006.14316).
+#' @references Ditzhaus, M., Dobler, D. and Pauly, M.(2020). Inferring median survival
+#'  differences in general factorial designs via permutation tests.
+#'  Statistical Methods in Medical Research. doi:10.1177/0962280220980784.
 #'
 #' @importFrom  MASS ginv
 #' @importFrom survival survfit
@@ -113,7 +114,7 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999,
     dat2$group <- group
 
     ###############################
-    dat2  <- dat2[order(dat2["Var"]),]
+    dat2  <- dat2[order(dat2$Var),]
     event <- dat2[,"event"]
     group <- dat2$group
 
@@ -198,12 +199,12 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999,
           fl[2] <- fl[2]/fl[1]
         }
       }
-      hypo_matrices <- GFD:::HN(fl)
+      hypo_matrices <- HN(fl)
     }
     else {
       TYPE <- "crossed"
-      hypo_matrices <- GFD:::HC(fl, perm_names, fac_names)[[1]]
-      fac_names <- GFD:::HC(fl, perm_names, fac_names)[[2]]
+      hypo_matrices <- HC(fl, perm_names, fac_names)[[1]]
+      fac_names <- HC(fl, perm_names, fac_names)[[2]]
     }
     if (length(fac_names) != length(hypo_matrices)) {
       stop("Something is wrong: Perhaps a missing interaction term in formula?")
@@ -217,7 +218,7 @@ medsanova <-  function(formula, event ="event", data = NULL, nperm = 1999,
     }
 
     ###############################
-    dat2  <- dat2[order(dat2["Var"]),]
+    dat2  <- dat2[order(dat2$Var),]
     event <- dat2[,"event"]
     group <- dat2$group
 

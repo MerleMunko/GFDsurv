@@ -65,7 +65,7 @@
 #' summary(out)
 #'
 #' @references Ditzhaus, M., Janssen, A. and Pauly, M. (2020). Permutation inference in factorial survival designs with the
-#'           CASANOVA. ArXiv preprint (arXiv:2004.10818).
+#'           CASANOVA. ArXiv preprint (arXiv:2004.10818v2).
 #'
 #' @importFrom stats runif
 #' @importFrom magic adiag
@@ -73,7 +73,7 @@
 #' @importFrom survival survfit
 #' @importFrom survminer ggsurvplot
 #' @importFrom gridExtra grid.arrange
-#' @import GFD
+
 
 #' @export
 #'
@@ -93,7 +93,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
   nf <- ncol(dat) - 1 - 1
   nadat <- names(dat)
 
-  if(anyNA(data[,nadat])){
+  if(anyNA(dat[,nadat])){
     stop("Data contains NAs!")
   }
 
@@ -166,7 +166,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
     dat2$group <- group
 
     ###############################
-    dat2  <- dat2[order(dat2["time"]),]
+    dat2  <- dat2[order(dat2$time),]
     event <- dat2[,"event"]
     group <- dat2$group
     #print(hypo_matrices)
@@ -254,12 +254,12 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
           fl[2] <- fl[2]/fl[1]
         }
       }
-      hypo_matrices <- GFD:::HN(fl)
+      hypo_matrices <- HN(fl)
     }
     else {
       TYPE <- "crossed"
-      hypo_matrices <- GFD:::HC(fl, perm_names, fac_names)[[1]]
-      fac_names <- GFD:::HC(fl, perm_names, fac_names)[[2]]
+      hypo_matrices <- HC(fl, perm_names, fac_names)[[1]]
+      fac_names <- HC(fl, perm_names, fac_names)[[2]]
     }
     if (length(fac_names) != length(hypo_matrices)) {
       stop("Something is wrong: Perhaps a missing interaction term in formula?")
@@ -275,7 +275,7 @@ casanova <- function(formula, event ="event", data = NULL, nperm = 1999,
     dat2$group <- group
     #print(n)
     ###############################
-    dat2  <- dat2[order(dat2["time"]),]
+    dat2  <- dat2[order(dat2$time),]
     event <- dat2[,"event"]
     group <- dat2$group
 
