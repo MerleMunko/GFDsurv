@@ -30,15 +30,17 @@ indicator. Default option is \code{NULL}.}
 \item{nperm}{The number of permutations used for calculating the permuted p-value.
 The default option is 1999.}
 
+\item{var_method}{Method for the variance estimation of the sample medians. The default
+is the "one-sided" confidence interval approach. Additionally, the "two-sided" confidence
+interval approach can be used.}
+
+\item{var_level}{A number between 0 and 1 specifying the confidence level for the
+variance estimation method; the default value is 0.9.}
+
 \item{nested.levels.unique}{A logical specifying whether the levels of the nested
 factor(s) are labeled uniquely or not.
  Default is FALSE, i.e., the levels of the nested factor are the same for each
- level of the main factor.
- @param var_method Method for the variance estimation of the sample medians. The default
- is the "one-sided" confidence interval approach. Additionally, the "two-sided" confidence
- interval approach can be used.
- @param var_level A number between 0 and 1 specifying the confidence level for the
- variance estimation method; the default value is 0.9.}
+ level of the main factor.}
 }
 \value{
 An  \code{medsanova} object containing the following components:
