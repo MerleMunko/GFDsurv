@@ -91,5 +91,5 @@ summary(out)
 }
 \references{
 Ditzhaus, M., Janssen, A. and Pauly, M. (2020). Permutation inference in factorial survival designs with the
-          CASANOVA. ArXiv preprint (arXiv:2004.10818).
+          CASANOVA. ArXiv preprint (arXiv:2004.10818v2).
 }

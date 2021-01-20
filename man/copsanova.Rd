@@ -93,5 +93,5 @@ summary(out)
 }
 \references{
 Dobler, D. and Pauly, M. (2020). Factorial analyses of treatment effects
-  under independent right-censoring. Statistical Methods in Medical Research 29(2), 325-343.
+ under independent right-censoring. Statistical Methods in Medical Research 29(2), 325-343. doi:10.1177/0962280219831316.
 }

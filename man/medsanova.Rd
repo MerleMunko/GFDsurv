@@ -78,6 +78,7 @@ summary(out)
 
 }
 \references{
-Ditzhaus, M., Dobler, D. and Pauly, M. (2020).  Inferring median survival
-differences in general factorial designs via permutation tests. ArXiv preprint (arxiv:2006.14316).
+Ditzhaus, M., Dobler, D. and Pauly, M.(2020). Inferring median survival
+ differences in general factorial designs via permutation tests.
+ Statistical Methods in Medical Research. doi:10.1177/0962280220980784.
 }
