@@ -1,12 +1,12 @@
 Package: GFDsurv
 Type: Package
-Title: GFDsurv
+Title: Tests for Survival Data in General Factorial Designs
 Version: 0.1.0
 Author: Marc Ditzhaus, Dennis Dobler, Markus Pauly, Philipp Steinhauer
 URL: http://github.com/PhilipSteinhauer/GFDsurv
 Maintainer: Marc Ditzhaus <marc.ditzhaus@tu-dortmund.de> , Philipp Steinhauer <philipp.steinhauer@tu-dortmund.de>
 Description: Tests for Survival Data in General Factorial Designs
-License: What license is it under?
+License: GPL (>= 3)
 Imports: 
   gridExtra (>= 2.3),
   shiny (>= 1.5.0),
