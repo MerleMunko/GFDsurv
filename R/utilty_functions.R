@@ -8,7 +8,8 @@ print.casanova <- function(x, ...) {
 }
 
 #' @export
-summary.casanova <- function (x, ...) {
+summary.casanova <- function (object, ...) {
+  x <- object
   if ( length(x$rg) == 0 ){
     cat("The chosen weights are linearly independent.", "\n",
         "The test is based on the crossing weight.", "\n","\n")
@@ -121,7 +122,8 @@ print.medsanova<- function(x, ...) {
 }
 
 #' @export
-summary.medsanova <- function (x, ...) {
+summary.medsanova <- function (object, ...) {
+  x <- object
   print(x)
 }
 
@@ -220,7 +222,8 @@ print.copsanova <- function(x, ...) {
 }
 
 #' @export
-summary.copsanova <- function (x, ...) {
+summary.copsanova <- function (object, ...) {
+  x <- object
   print(x)
 }
 
