@@ -60,7 +60,7 @@
 #' library(condSURV)
 #' data(colonCS)
 #' out <- copsanova(formula ="Stime ~ rx*sex",event = "event",
-#'                  data = colonCS)
+#'                  data = colonCS, BSiter = 99)
 #'
 #' ##Detailed informations:
 #'summary(out)
