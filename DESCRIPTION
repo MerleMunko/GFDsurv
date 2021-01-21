@@ -1,7 +1,7 @@
 Package: GFDsurv
 Type: Package
 Title: GFDsurv
-Version: 0.1.0
+Version: 0.0.2
 Author: Marc Ditzhaus, Dennis Dobler, Markus Pauly, Philipp Steinhauer
 URL: http://github.com/PhilipSteinhauer/GFDsurv
 Maintainer: Marc Ditzhaus <marc.ditzhaus@tu-dortmund.de> , Philipp Steinhauer <philipp.steinhauer@tu-dortmund.de>
