@@ -1,6 +1,6 @@
 Package: GFDsurv
 Type: Package
-Title: GFDsurv
+Title: Tests for Survival Data in General Factorial Designs
 Version: 0.0.2
 Author: Marc Ditzhaus, Dennis Dobler, Markus Pauly, Philipp Steinhauer
 URL: http://github.com/PhilipSteinhauer/GFDsurv
