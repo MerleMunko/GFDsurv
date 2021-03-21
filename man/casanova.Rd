@@ -38,7 +38,7 @@ factor(s) are labeled uniquely or not.
  Default is FALSE, i.e., the levels of the nested factor are the same for each
  level of the main factor.}
 
-\item{rg}{A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the
+\item{rg}{A list containing the exponents \code{c(r, g)} of the
 weights
   \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.}
