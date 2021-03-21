@@ -15,7 +15,7 @@
 #' indicator. Default option is \code{NULL}.
 #' @param cross logical. Should the crossing weight w(x) = 1 - 2x be included?
 #'  The default is \code{TRUE}.
-#' @param rg A list (or \code{NULL}) containing the exponents \code{c(r, g)} of the
+#' @param rg A list containing the exponents \code{c(r, g)} of the
 #' weights
 #'   \eqn{w(x) = x^r (1-x)^g}. Both exponents need to be natural numbers including 0.
 #'  Default is \code{list( c(0, 0) )} corresponding to the log-rank weight.

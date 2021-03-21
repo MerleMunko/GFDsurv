@@ -143,9 +143,9 @@ GFDsurvGUI <- function() {
                                          "two.sided" = "twosided"), inline = TRUE)
                                       ),
                                   shinyjs::hidden(
-                            numericInput("var_level", "confidence intervalle with level",
+                            numericInput("var_level", "confidence interval with level",
                                                    min = 0, max = 1,
-                                                   value = 0.05, width = "20%")
+                                                   value = 0.9, width = "20%")
                                   )
                           ),
 
