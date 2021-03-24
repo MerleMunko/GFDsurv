@@ -68,6 +68,7 @@ interval approach is used and the level of this confidence interval can be speci
   the second one is based on a permutation procedure.
 }
 \examples{
+\donttest{
 library("survival")
 data(veteran)
 out <- medsanova(formula ="time ~ trt*celltype",event = "status",
@@ -75,7 +76,7 @@ out <- medsanova(formula ="time ~ trt*celltype",event = "status",
 
 ## Detailed informations:
 summary(out)
-
+}
 }
 \references{
 Ditzhaus, M., Dobler, D. and Pauly, M.(2020). Inferring median survival

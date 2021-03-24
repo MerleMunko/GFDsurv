@@ -82,13 +82,14 @@ the largest possible censoring times per group.
   corresponding p-value based on a the specified multiplier procedure.
 }
 \examples{
+\donttest{
 library(condSURV)
 data(colonCS)
 out <- copsanova(formula ="Stime ~ rx*sex",event = "event",
                  data = colonCS, BSiter = 99)
 
 ##Detailed informations:
-summary(out)
+summary(out)}
 
 }
 \references{

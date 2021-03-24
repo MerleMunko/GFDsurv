@@ -47,7 +47,7 @@
 #'  \item{statistics}{The value of the casanova along with degrees of freedom of the
 #'  central chi-square distribution and p-value, as well as the p-value of the
 #'   permutation procedure.}
-#'  \item{rg}{A list containg the exponents of the direction considered in the
+#'  \item{rg}{A list containing the exponents of the direction considered in the
 #'  statistical analysis}
 #'  \item{cross}{logical. Was the crossing direction considered in the statistical
 #'  analysis}
@@ -56,6 +56,7 @@
 #'  \item{nperm}{The number of permutations used for calculating the permuted p-value.}
 #'
 #' @examples
+#' \donttest{
 #' library("survival")
 #' data(veteran)
 #' out <- casanova(formula ="time ~ trt*celltype",event = "status",
@@ -63,7 +64,7 @@
 #'
 #' ## Detailed informations:
 #' summary(out)
-#'
+#'}
 #' @references Ditzhaus, M., Janssen, A. and Pauly, M. (2020). Permutation inference in factorial survival designs with the
 #'           CASANOVA. ArXiv preprint (arXiv:2004.10818v2).
 #'

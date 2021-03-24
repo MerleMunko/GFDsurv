@@ -50,7 +50,7 @@ A \code{casanova} object containing the following components:
  \item{statistics}{The value of the casanova along with degrees of freedom of the
  central chi-square distribution and p-value, as well as the p-value of the
   permutation procedure.}
- \item{rg}{A list containg the exponents of the direction considered in the
+ \item{rg}{A list containing the exponents of the direction considered in the
  statistical analysis}
  \item{cross}{logical. Was the crossing direction considered in the statistical
  analysis}
@@ -80,6 +80,7 @@ weights if the original weights violate the aforemention assumption.
   the second one is based on a permutation procedure.
 }
 \examples{
+\donttest{
 library("survival")
 data(veteran)
 out <- casanova(formula ="time ~ trt*celltype",event = "status",
@@ -87,7 +88,7 @@ out <- casanova(formula ="time ~ trt*celltype",event = "status",
 
 ## Detailed informations:
 summary(out)
-
+}
 }
 \references{
 Ditzhaus, M., Janssen, A. and Pauly, M. (2020). Permutation inference in factorial survival designs with the

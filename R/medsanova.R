@@ -42,6 +42,7 @@
 #'   permutation procedure.}
 #'  \item{nperm}{The number of permutations used for calculating the permuted p-value.}
 #' @examples
+#' \donttest{
 #' library("survival")
 #' data(veteran)
 #' out <- medsanova(formula ="time ~ trt*celltype",event = "status",
@@ -49,7 +50,7 @@
 #'
 #' ## Detailed informations:
 #' summary(out)
-#'
+#' }
 #' @references Ditzhaus, M., Dobler, D. and Pauly, M.(2020). Inferring median survival
 #'  differences in general factorial designs via permutation tests.
 #'  Statistical Methods in Medical Research. doi:10.1177/0962280220980784.
