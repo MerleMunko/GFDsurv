@@ -10,8 +10,8 @@
 #'
 #'
 #' @import shiny
-#' @import shinyjs
 #' @import utils
+#' @importFrom shinyjs useShinyjs hide hidden show
 #' @importFrom shinyWidgets sliderTextInput
 #' @importFrom tippy tippy_this
 #' @importFrom shinythemes shinytheme

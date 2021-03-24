@@ -57,14 +57,14 @@
 #' the analysis.}
 #'
 #' @examples
+#' \donttest{
 #' library(condSURV)
 #' data(colonCS)
 #' out <- copsanova(formula ="Stime ~ rx*sex",event = "event",
 #'                  data = colonCS, BSiter = 99)
 #'
 #' ##Detailed informations:
-#'summary(out)
-
+#'summary(out)}
 #'
 #' @references
 #'  Dobler, D. and Pauly, M. (2020). Factorial analyses of treatment effects
