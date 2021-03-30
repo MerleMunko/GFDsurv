@@ -24,7 +24,6 @@ Imports:
   plyr (>= 1.8.6),
   stats
 Encoding: UTF-8
-LazyData: TRUE
 RoxygenNote: 7.1.1
 Suggests: 
     condSURV
