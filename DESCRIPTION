@@ -2,13 +2,25 @@ Package: GFDsurv
 Type: Package
 Title: Tests for Survival Data in General Factorial Designs
 Version: 0.0.2
-Author: Marc Ditzhaus, Dennis Dobler, Markus Pauly, Philipp Steinhauer
+Authors@R: 
+  c(person(given = "Marc",
+           family = "Ditzhaus",
+           role = c("aut")),
+    person(given = "Dennis",
+           family = "Dobler",
+           role = "aut"),
+    person(given = "Markus",
+           family = "Pauly",
+           role = "aut"),
+    person(given = "Philipp",
+           family = "Steinhauer",
+           role = c("aut","cre"), email = "philipp.steinhauer@tu-dortmund.de"))
 URL: https://github.com/PhilippSteinhauer/GFDsurv
-Maintainer:  Philipp Steinhauer <philipp.steinhauer@tu-dortmund.de>
-Description: Implemented are three Wald-type statistic and respective permuted versions for null hypotheses formulated in terms of cumulative hazard rate functions, medians and the concordance measure, respectively, in the general framework of survival factorial designs with possibly heterogeneous survival and/or censoring distributions, for crossed designs with an arbitrary number of factors and nested designs with up to three factors.
-Ditzhaus, Dobler and Pauly (2020) <doi:10.1177/0962280220980784> 
-Ditzhaus, Janssen, Pauly (2020) <arXiv: 2004.10818v2>
-Dobler and Pauly (2019) <doi:10.1177/0962280219831316>
+Description: Implemented are three Wald-type statistic and respective
+  permuted versions for null hypotheses formulated in terms of cumulative hazard rate functions, medians and the concordance measure, respectively, in the general framework of survival factorial designs with possibly heterogeneous survival and/or censoring distributions, for crossed designs with an arbitrary number of factors and nested designs with up to three factors.
+	Ditzhaus, Dobler and Pauly (2020) <doi:10.1177/0962280220980784> 
+	Ditzhaus, Janssen, Pauly (2020) <arXiv: 2004.10818v2>
+	Dobler and Pauly (2019) <doi:10.1177/0962280219831316>.
 License: GPL (>= 3)
 Imports: 
   gridExtra (>= 2.3),
