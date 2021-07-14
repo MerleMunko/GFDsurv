@@ -25,7 +25,6 @@ License: GPL (>= 3)
 Imports: 
   gridExtra (>= 2.3),
   shiny (>= 1.5.0),
-  shinyWidgets (>= 0.5.4),
   shinyjs (>= 2.0.0),
   shinythemes (>= 1.1.2),
   survival (>= 3.2-7),
