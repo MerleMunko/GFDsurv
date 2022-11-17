@@ -1,7 +1,7 @@
 Package: GFDsurv
 Type: Package
 Title: Tests for Survival Data in General Factorial Designs
-Version: 0.0.2
+Version: 0.1.0
 Authors@R: 
   c(person(given = "Marc",
            family = "Ditzhaus",
@@ -14,7 +14,10 @@ Authors@R:
            role = "aut"),
     person(given = "Philipp",
            family = "Steinhauer",
-           role = c("aut","cre"), email = "philipp.steinhauer@tu-dortmund.de"))
+           role = "aut"),
+    person(given = "Merle",
+           family = "Munko",
+           role = c("aut","cre"), email = "merle.munko@ovgu.de"))
 URL: https://github.com/PhilippSteinhauer/GFDsurv
 Description: Implemented are three Wald-type statistic and respective
   permuted versions for null hypotheses formulated in terms of cumulative hazard rate functions, medians and the concordance measure, respectively, in the general framework of survival factorial designs with possibly heterogeneous survival and/or censoring distributions, for crossed designs with an arbitrary number of factors and nested designs with up to three factors.
